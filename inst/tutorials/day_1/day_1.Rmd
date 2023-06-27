@@ -1,0 +1,127 @@
+---
+title: "Workshop Hands-on #1"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(LearnPM)
+
+library(Pmetrics)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Source: Primary Parameters
+
+Review the piperacillin PopPK model from Li et al., JAC 2005. The following R code included in the LearnPM package will open the pdf in your default viewer.
+
+``` {r open-pdf, exercise = TRUE}
+pkgPDF("Li_JAC_2005.pdf")
+```
+
+### Quiz
+``` {r extraction-quiz}
+quiz(
+  caption = "Extracting from a paper",
+  question("How many compartments do the authors report for the final model?",
+           answer("1", correct = TRUE),
+           answer("2"),
+           answer("3"),
+           allow_retry = TRUE
+  ),
+  question("Which are the primary (typical) parameters in the model? Hint: refer to Table 2.",
+           answer("CL"),
+           answer("CL_slope", correct = TRUE),
+           answer("CL_int", correct = TRUE),
+           answer("V"),
+           answer("V_slope", correct = TRUE),
+           answer("V_int"),
+           answer("CCR"),
+           answer("All"),
+           allow_retry = TRUE,
+           try_again = "Incorrect. Figure out the names corresponding to each of the $\\theta$ parameters."
+  ),
+  question("What type of distribution do the interindividual random parameter (eta, $\\eta$) values have?",
+           answer("Normal"),
+           answer("Log-normal", correct = TRUE),
+           allow_retry = TRUE),
+  question("Which primary parameters have interindividual variance?",
+           answer("$\\theta_1$ (CL_int)"),
+           answer("$\\theta_2$ (CL_slope)", correct = TRUE),
+           answer("$\\theta_3$ (V_slope)", correct = TRUE),
+           allow_retry = TRUE
+  )
+)
+```
+
+Know that $\omega$ is the standard deviation of $\eta$. To derive $\omega$ from CV%, use the approximation $\omega = CV\%$ when CV% is small (<50%), or the more exact formula  $\omega = \sqrt{log((\frac{CV\%}{100})^2 + 1)}$.
+
+Again using Table 2, let's extract the correct values for our simulations with piperacillin. We'll use clearance as the example, but the same will apply to volume.
+
+### Quiz
+
+``` {r theta-cl}
+quiz(caption = "Extracting necessary values",
+     question("What is the typical value of $\\theta_1$ (CL_int)?",
+              answer("5.05", correct = TRUE),
+              type = "learnr_text",
+              incorrect = "It should be 5.05."
+     ),
+     question("What is the typical value of $\\theta_2$ (CL_slope)?",
+              answer("9.60", correct = TRUE),
+              type = "learnr_text",
+              incorrect = "It should be 9.60."
+     ),
+     question("What is the value of $\\omega$ for the standard deviation of the $\\eta$-distribution around $\\theta_2$? Hint: use the approximation formula above and the reported CV%. Round to three decimal places.",
+              answer("0.277", correct = TRUE),
+              type = "learnr_text",
+              incorrect = "It should be 0.277.",
+              correct = "Yes! It is simply the CV%/100."
+     )
+)
+```
+
+## Source: Covariates
+
+It's important to include covariate relationships with model parameters. The paper by Liu et al has relationships between covariates and two primary model parameters.
+
+### Quiz 3
+``` {r covariate-question}
+question("Try writing the equation from the paper that relates body weight to
+volume. Use *V* for volume, *V_slope* for $\\theta_3$ and *WT* for weight. Spacing and case don't matter.", type = "learnr_text",
+answer_fn(\(x){
+  x2 <- stringr::str_replace_all(x, "\\s+", "") 
+  if(!is.na(stringr::str_extract(x2, stringr::regex("V=V_slope\\*WT/81.8", ignore_case = TRUE)))){
+    return(correct())
+  }
+  return(incorrect())
+}),
+allow_retry = TRUE,
+correct = "That is right.",
+incorrect = "Make sure you have named variables as in the instructions. Also ensure that you have normalized WT."
+)
+```
+
+Obviously there is a similar equation for Clearance.
+
+## Define Simulation Goals
+
+Here we have no quizes, but we want to test three different piperacillin dosage regimens for how well they achieve desired concentration profiles in the population. 
+
+To do this, we are going to simulate steady-state PK profiles based on the piperacillin model in populations with:
+
+* 3 piperacillin dosage regimens in 1000 subjects each
+  - 4g q8h (30 min infusion)
+  - 4g q8h (4h infusion)
+  - 12g continuous infusion
+* Fixed, normal renal function (90 mL/min)
+* Variable (random) weights with mean 82 kg, sd 25 kg, range 50 - 140 kg
+
+## Create the data template
+
+Writing the data file from scratch
+Explain data format
+Explain column header
+Writing the 3 dosages
+

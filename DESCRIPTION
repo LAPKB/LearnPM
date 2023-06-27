@@ -1,0 +1,21 @@
+Package: LearnPM
+Title: Learn How to Use Pmetrics
+Version: 0.0.0.9000
+Authors@R: 
+    person("Michael", "Neely", , "mneely@usc.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-1675-8276"))
+Description: Tutorials to learn how to use the Pmetrics modeling and
+    simulation package for R.
+License: GPL (>= 2)
+Encoding: UTF-8
+Language: es
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports: 
+    crayon,
+    dplyr,
+    learnr,
+    Pmetrics,
+    remotes,
+    rlang,
+    stringr
