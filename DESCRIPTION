@@ -19,3 +19,5 @@ Imports:
     remotes,
     rlang,
     stringr
+URL: https://github.com/mnneely/LearnPM
+BugReports: https://github.com/mnneely/LearnPM/issues
