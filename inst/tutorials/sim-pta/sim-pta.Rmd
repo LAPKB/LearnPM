@@ -281,7 +281,7 @@ question("How many primary parameters are there?",
 
 <details>
 <summary><u>Primary parameter trickiness</u> (Click to expand)</summary>
-In reality, although we indeed want to simulate **3** primary parameters, in this case they do not correspond to the $\\theta$ values exactly. We are trying to simulate the *random* parameters $\\eta_1$ and $\\eta_2$, which have means of 0 and standard deviations of $\\omega_1$ and $\\omega_2$. The third random parameter is weight in our simulations. The $\\theta$ values are actually fixed. We will need to account for them in the model equations, but not simulate them as random variables. 
+In reality, although we indeed want to simulate **3** primary parameters, in this case they do not correspond to the $\theta$ values exactly. We are trying to simulate the *random* parameters $\eta_1$ and $\eta_2$, which have means of 0 and standard deviations of $\omega_1$ and $\omega_2$. The third random parameter is weight in our simulations. The $\\theta$ values are actually fixed. We will need to account for them in the model equations, but not simulate them as random variables. 
 </details>
 
 ### Specifying parameter values
@@ -294,7 +294,7 @@ The Pmetrics simulator always simulates from normal distributions with a mean an
   * wt
 2. Choose to specify as mean/SD.
 3. Use a mean of 0 for both etaCL and etaV. 
-4. For standard deviation, go back to your second quiz and recall the value you found for $\\omega_CL$. Multiply that number by 2 to allow for a wider simulation range and enter it for the SD on etaCL.
+4. For standard deviation, go back to your second quiz and recall the value you found for $\omega_CL$. Multiply that number by 2 to allow for a wider simulation range and enter it for the SD on etaCL.
 5. Do the same calculation for the SD on etaV.
 6. For weight, enter mean 82 kg, SD 25 kg.
 
@@ -330,7 +330,7 @@ knitr::include_graphics("images/cov.png")
 
 The SECondary tab is where we define the relationships between primary parameters and between those parameters and covariates. You'll notice that the model already has a secondary equation `Ke = CL/V`. This is because Pmetrics is looking for specifically named parameters to understand if it can solve the model without differential equations. In this case, it knows that this one-compartment IV model should have a Ke, but because we chose the model with clearance, it writes the equation to derive Ke from CL.
 
-However, we have not yet defined either CL or V. We have etaCL and etaV. Look again at the paper by Li. We know that the $\\eta$ values are log-normally distributed. This means that the equation for a parameter is $TV*e^\eta$ and $TV$ is a combination of $\theta$s and covariates. For CL, $TV_{CL}=\theta_1 + \theta_2*CCR/89$, which we see in Table 2. For V, $TV_V=\theta_3*WT/81.8$.
+However, we have not yet defined either CL or V. We have etaCL and etaV. Look again at the paper by Li. We know that the $\eta$ values are log-normally distributed. This means that the equation for a parameter is $TV*e^\eta$ and $TV$ is a combination of $\theta$s and covariates. For CL, $TV_{CL}=\theta_1 + \theta_2*CCR/89$, which we see in Table 2. For V, $TV_V=\theta_3*WT/81.8$.
 
 The secondary equation for volume is then `V = 22.3 * WT/81.1 * exp(etaV)`. We saw something similar to this in an earlier Quiz.
 
