@@ -1,5 +1,5 @@
 ---
-title: "Workshop Hands-on #1"
+title: "Simulations from literature and PTA"
 output: 
   learnr::tutorial:
     progressive: true

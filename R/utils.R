@@ -1,28 +1,27 @@
-# Hello, world!
-#
-# This is an example function named 'hello'
-# which prints 'Hello, world!'.
-#
-# You can learn more about package authoring with RStudio at:
-#
-#   http://r-pkgs.had.co.nz/
-#
-# Some useful keyboard shortcuts for package authoring:
-#
-#   Install Package:           'Cmd + Shift + B'
-#   Check Package:             'Cmd + Shift + E'
-#   Test Package:              'Cmd + Shift + T'
 
+#' Open PDF in tutorial data folder.
+#'
+#' Opens a pdf file shippped with a given tutorial.
+#'
+#' @param file The filename of the pdf.
+#'
 #' @export
 pkgPDF <- function(file) {
-  # system(paste0("open ",
-  #               system.file(paste0("tutorials/data/",file), package = "LearnPM")
-  #               )
-  # )
-  #
+
   system(paste0("open data/",file))
 }
 
+
+#' Install Pmetrics from Github.
+#'
+#' Installs Pmetrics from the [LAPKB Github repository](https://github.com/LAPKB/Pmetrics).
+#'
+#' @param ref The branch to install from. Default is "HEAD", which installs the current
+#' release. Choose another branch like "dev" for access to beta versions.
+#' @param force Re-install even if installed version is the same as repository version.
+#' Default is `FALSE`.
+#' @param ask Ask before installing. Default is `FALSE`.
+#'
 #' @export
 install_Pmetrics <- function(ref = "HEAD", force = FALSE, ask = FALSE){
 
@@ -42,6 +41,34 @@ install_Pmetrics <- function(ref = "HEAD", force = FALSE, ask = FALSE){
         "after the package is installed.")
   } else {
     cat("Pmetrics v.",as.character(packageVersion("Pmetrics")),"is installed.")
+  }
+
+}
+
+#' Launch tutorials in the package
+#'
+#' Provides a list of current tutorials and asks user which one to launch.
+#'
+#' @param browser Launch in browser, rather than Rstudio window. Default is `TRUE`.
+#'
+#' @export
+#'
+launch <- function(browser = TRUE){
+  avail <- learnr::available_tutorials("LearnPM")
+  n_tut <- length(avail$name)
+  cat(paste0("The following options are available.\n\n"))
+  purrr::walk(1:n_tut,\(x){
+    cat(paste0(x,". ",crayon::blue(avail$title[x]),"\n"))
+  })
+  cat(paste0(n_tut+1,". ",crayon::red("None")," - abort.\n"))
+  cat("\n")
+  ans <- as.numeric(readline("Which option would you like? "))
+  if(ans<=n_tut){
+    learnr::run_tutorial(avail$name[ans], "LearnPM",
+                         shiny_args = list(launch.browser = browser),
+                         as_rstudio_job = !browser)
+  } else {
+    return(invisible(NULL))
   }
 
 }
