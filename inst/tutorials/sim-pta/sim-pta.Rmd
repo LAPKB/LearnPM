@@ -12,6 +12,45 @@ library(learnr)
 library(LearnPM)
 library(Pmetrics)
 knitr::opts_chunk$set(echo = FALSE)
+mod1 <- PM_model$new(
+  list(
+    pri = list(
+      etaCL = msd(0, 0.554),
+      etaV = msd(0, 0.504),
+      wt = msd(82, 25)
+    ),
+    cov = list(
+      covariate("ccr")
+    ),
+    sec = list(
+      "V = 22.3 * wt/81.1 * exp(etaV)",
+      "CL = (5.05 + 9.60 * ccr/89) * exp(etaCL)",
+      "Ke = CL/V"
+    ),
+    eqn = list(
+      "{algebraic: P[CL,V], B[0], R[1], O[1]}",
+      "dX[1] = RATEIV[1] - Ke * X[1]"
+    ),
+    out = list(
+      Y1 = list(
+        val = "X[1]/V",
+        err = list(
+          model = additive(0.1),
+          assay = errorPoly(c(0.1, 0.1, 0, 0))
+        )
+      )
+    )
+  )
+)
+
+dat <- PM_data$new()$
+  addEvent(id = 1, time = 0, dose = 4000, dur = 0.5, addl = 6, ii = 8, wt = -1, ccr = 90)$
+  addEvent(id = 1, time = 72, out = -1)$
+  addEvent(id = 2, time = 0, dose = 4000, dur = 4, addl = 6, ii = 8, wt = -1, ccr = 90)$
+  addEvent(id = 2, time = 72, out = -1)$
+  addEvent(id = 3, time = 0, dose = 12000, dur = 24, addl = 1, ii = 24, wt = -1, ccr = 90)$
+  addEvent(id = 3, time = 72, out = -1, validate = TRUE, quiet = TRUE)
+
 ```
 ## Foundations
 
@@ -280,7 +319,7 @@ question("How many primary parameters are there?",
 ```
 
 <details>
-<summary><u>Primary parameter trickiness</u> (Click to expand)</summary>
+<summary>Primary parameter trickiness</summary>
 In reality, although we indeed want to simulate **3** primary parameters, in this case they do not correspond to the $\theta$ values exactly. We are trying to simulate the *random* parameters $\eta_1$ and $\eta_2$, which have means of 0 and standard deviations of $\omega_1$ and $\omega_2$. The third random parameter is weight in our simulations. The $\\theta$ values are actually fixed. We will need to account for them in the model equations, but not simulate them as random variables. 
 </details>
 
@@ -289,9 +328,9 @@ In reality, although we indeed want to simulate **3** primary parameters, in thi
 The Pmetrics simulator always simulates from normal distributions with a mean and standard deviation. It is possible to log-transform parameter values, and in fact we will do that in this model. 
 
 1. On the Primary Parameters tab of the app, name your 3 variables:
-  * etaCL
-  * etaV
-  * wt
+* etaCL
+* etaV
+* wt
 2. Choose to specify as mean/SD.
 3. Use a mean of 0 for both etaCL and etaV. 
 4. For standard deviation, go back to your second quiz and recall the value you found for $\omega_CL$. Multiply that number by 2 to allow for a wider simulation range and enter it for the SD on etaCL.
@@ -299,7 +338,7 @@ The Pmetrics simulator always simulates from normal distributions with a mean an
 6. For weight, enter mean 82 kg, SD 25 kg.
 
 <details>
-<summary><u>Check your work</u></summary>
+<summary>Check your work</summary>
 ```{r echo = F}
 knitr::include_graphics("images/pri.png")
 ```
@@ -320,7 +359,7 @@ Now, learn how to make the accompanying model, continuing in the model builder a
 - We don't add WT as a covariate, because we already added it as a primary parameter to be simulated.
 
 <details>
-<summary><u>Check your work</u></summary>
+<summary>Check your work</summary>
 ```{r echo = F}
 knitr::include_graphics("images/cov.png")
 ```
@@ -353,15 +392,15 @@ incorrect = "Make sure you have named variables as in the instructions. Also ens
 ```
 
 <details>
-  <summary><u>I give up, show me the answer.</u></summary>
-  CL = (5.05 + 9.60 \* ccr/89) \* exp(etaCL)
-  Don't feel bad if you didn't get it. Pharmacometrics is very detail oriented and your skills will improve with practice!
+<summary>I give up, show me the answer.</summary>
+CL = (5.05 + 9.60 \* ccr/89) \* exp(etaCL)
+Don't feel bad if you didn't get it. Pharmacometrics is very detail oriented and your skills will improve with practice!
 </details>
 
 Add these equations to the definition block and watch the Model List evolve. **Note:** Put the equations for V and CL before the equation for Ke, so that Pmetrics knows what CL and V are by the time it reaches Ke.
 
 <details>
-<summary><u>Check your work</u></summary>
+<summary>Check your work</summary>
 ```{r echo = F}
 knitr::include_graphics("images/sec.png")
 ```
@@ -454,5 +493,122 @@ mod1 <- PM_model$new(
   )
 )
 ```
+
+## Building the prior for simulation
+
+We have the model; we have the data template. Let's turn our attention to the command to execute the simulator.
+
+The final mandatory item to run the simulator is a definition of the parameter value distributions from which to draw samples. This is called `poppar`, which is a list of three elements.
+
+* **wt** The weights of distributions in a mixture model. Typically, especially if simulating from the literature, there will only be one value, which will be 1. If there were two distributions, i.e. a bimodal parameter, then this element would have two numbers with the relative weights of each mode, summing to 1, e.g. `c(0.4, 0.6)`.
+* **mean** A vector of mean values for each random parameter in the model. If `length(wt) > 1` then this will be a matrix, with each row containing the mean parameter values for each mode.
+* **cov** The covariance matrix. Diagonal elements are the variances for the parameters, and off-diagonal are the co-variances. If there is more than one mode, then this is just the overall covariance, i.e. there is still only one matrix. If simulating from the literature, the co-variances are usually zero as they are not supplied. In that case, a convenvient way to make a diagonal matrix in R, with off-diagonal values = 0 is as follows.
+
+```{r echo = T, eval = TRUE}
+diag(c(0.25, 625))
+```
+
+Let's think about how to build `poppar` for our simulation, based on the values in Li et al. **Note:** For the random parameter variances, it's not a bad idea to increase them to allow for the possibility of parameter values beyond the original population. In the questions below, be sure to double the standard deviation of the random parameters before you calculate the variances by squaring them.
+
+```{r poppar-quiz}
+quiz(
+  caption = "Building `poppar`",
+  question("Which `wt` should you use?",
+           answer("`wt = 1`", correct = TRUE),
+           answer("`wt = c(0.5, 0.5)`"),
+           answer("`wt = 82`"),
+           answer("`wt = c(0.3, 0.7)`"),
+           answer("None of these"),
+           correct = "Yes, the distribution for the parameter values is unimodal, so wt = 1.",
+           incorrect = "Hint: how many mean values are there for each random parameter?",
+           allow_retry = TRUE
+  ),
+  question("What values of `mean` should you use? Refer to Table 2 in Li.",
+           answer("`mean = c(5.05, 9.6, 22.3)`"),
+           answer("`mean = c(22.7, 25.2, 18.5)`"),
+           answer("`mean = c(0, 0, 82)`", correct = TRUE),
+           answer("None of these"),
+           correct = "Yes! We are looking for the means of $\\eta_{CL}$, $\\eta_V$ and WT. Good job.",
+           incorrect = "Not quite. Go back to prior exercises and remember what the random parameters are.",
+           allow_retry = TRUE
+  ),
+  question("The covariance matrix will have non-zero off-diagonal values.",
+           answer("TRUE"),
+           answer("FALSE", correct = TRUE),
+           correct = "Correct. We have no data about correlations between parameters, so the off-diagonal co-variances are zero.",
+           incorrect = "Well, we have no data about correlations between parameters...",
+           allow_retry = TRUE
+  ),
+  question("What is the right code for the covariance matrix?",
+           answer("`cov = diag(c(5.05, 9.60, 22.3)`"),
+           answer("`cov = diag(c(0.277, 0.252, 25)`"),
+           answer("`cov = diag(c(0.277^2, 0.252^2, 25^2)`"),
+           answer("`cov = diag(c((2*0.277)^2, (2*0.252)^2, (2*25)^2)`", correct = TRUE),
+           correct = "Nice job. You remembered to double the standard deviations before squaring them.",
+           incorrect = "Don't forget you need to focus on standard deviation of each random parameter ($\\omega$$), double it, and then sqaure it."
+)
+)
+```
+
+You now should have enough information to build `poppar`. Replace the missing values with the correct ones. The "Run Code" button won't do anything, but you can check your answer by clicking the "Solution" button.
+
+```{r poppar-build, exercise = TRUE}
+poppar <- list(wt = NA, mean = c(NA, NA, NA), cov = diag(c(NA, NA, NA)))
+```
+
+```{r poppar-build-solution}
+poppar <- list(wt = 1, mean = c(0, 0, 82), cov = diag(c((2*0.277)^2, (2*0.252)^2, (2*25)^2)))
+```
+
+**Copy the code into your Rscript.**
+
+
+## Simulator command
+
+At last we are ready to simulate. As described in [Simulation](https://lapkb.github.io/Pmetrics/articles/simulation.html) vignette, there are two ways to run the simulator. 
+
+* If starting from the results of a population analysis, e.g. with NPAG or IT2B
+```{r echo = TRUE, eval = FALSE}
+run1 <- PM_load(1)
+sim1 <- run1$sim(...)
+```
+* Otherwise, use this construct.
+```{r echo = TRUE, eval = FALSE}
+sim1 <- PM_sim$run(poppar, model, data,...)
+```
+  
+The advantage of the first approach is that `poppar` can be obtained from the `PM_final` object inside `run1`, and the model and data are also fields inside `run1`. You can replace the data to use a different template.
+
+However, if you don't have a prior run, such as the case in this workshop where we are simulating from the literature, you need to go with approach two. That's why we've been learning to make the data, model and `poppar`.
+
+The [Simulation](https://lapkb.github.io/Pmetrics/articles/simulation.html) vignette and the help for the underlying simulator function [SIMrun](https://lapkb.github.io/Pmetrics/reference/SIMrun.html) detail all the arguments you can use to change the behavior of the simulator. Here, we'll focus on two:
+
+* limits
+* predInt
+
+Limits allows you to truncate the simulation to keep it within the boundaries established. Using a value of `NA` will apply the limits in the model. You can remind yourself of those limits by looking at min and max for each of the primary parameters with this code.
+
+```{r mod1-print, exercise = TRUE}
+mod1
+```
+
+Using `predInt` is a powerful shorthand for adding simulations/predicitons at defined intervals without having to specify them directly in your data template. This is why we only needed to add one observation event at TIME = 72. The easiest way to use it here is `predInt = 1`, which will generate simulated output every hour from TIME = 0 until the last event in each simulation template, in this case TIME = 72. This way, when you plot the simulated data, you can see the whole profile and easily determine if you are at steady state, for example.
+
+You now have all the arguments for your call to `PM_sim$run()`.
+
+* mod1
+* dat
+* poppar
+* limits
+* predInt
+
+Try your best to write the code in your Rscript, Workshop.R. Assign the results to `sim1`.
+
+<details>
+  <summary>Check your work.</summary>
+  `sim1 <- PM_sim$run(model = mod1, data = dat, poppar = poppar, limits = NA, predInt = 1)`
+  
+  This assumes you already defined mod1, dat, and poppar using the code that we devloped earlier and copied into Workshop.R.
+</details>
 
 
