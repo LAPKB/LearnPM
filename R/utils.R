@@ -64,9 +64,10 @@ launch <- function(browser = TRUE){
   cat("\n")
   ans <- as.numeric(readline("Which option would you like? "))
   if(ans<=n_tut){
+    #options(shiny.launch.browser = browser)
     learnr::run_tutorial(avail$name[ans], "LearnPM",
-                         shiny_args = list(launch.browser = browser),
-                         as_rstudio_job = !browser)
+                         # shiny_args = list(launch.browser = TRUE),
+                         as_rstudio_job = browser)
   } else {
     return(invisible(NULL))
   }
