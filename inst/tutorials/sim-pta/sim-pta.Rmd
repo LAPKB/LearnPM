@@ -1081,7 +1081,7 @@ You can add higher doses to your `dat` template as additional subjects in the te
 
 Of course, the higher the dose, the higher a breakpoint, but toxicity becomes an issue. There isn't much on piperacillin toxicity, but one article proposed a threshold of 157.2 mg/L for continuous infusion. 
 
-``` {r open-pdf2, exercise = TRUE}
+``` {r open-pdf3, exercise = TRUE}
 pkgPDF("Quinton_2016.pdf")
 ```
 
