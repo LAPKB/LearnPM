@@ -74,3 +74,16 @@ launch <- function(browser = TRUE){
 
 }
 
+#' Clean text
+#'
+#' Remove spaces, leading zeros, trailing zeros after decimals and numbers and trailing zeros after decimals
+#' @param x the string to process
+#' @export
+tidyup <- function(x){
+  x2 <- stringr::str_replace_all(x, "\\s+", "") %>% #remove spaces
+    stringr::str_replace_all("0+(\\d*\\.)","\\1") %>% #remove leading zeros
+    stringr::str_replace_all("(\\.0*[1-9]+)0+","\\1") %>% #remove trailing zeros after numbers
+    stringr::str_replace_all("(\\d+)\\.0+([^1-9])+","\\1\\2") #remove trailing zeros after decimal
+  return(x2)
+}
+

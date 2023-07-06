@@ -3,3 +3,4 @@
 export(install_Pmetrics)
 export(launch)
 export(pkgPDF)
+export(tidyup)

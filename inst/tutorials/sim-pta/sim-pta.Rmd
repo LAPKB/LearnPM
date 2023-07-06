@@ -60,7 +60,7 @@ This tutorial was designed to accompany a workshop, but may be completed indepen
 - If you have not done so already, you can obtain everything you need by following these [instructions](http://www.lapk.org/Pmetrics_install.php){target="_blank"}. **Important**: For this workshop we are using a beta version of Pmetrics, v. 2.1.0. Prior versions will not work. Replace the command in step 4 with `devtools::install_github("LAPKB/Pmetrics@dev")`. 
 
 2. You have also run [PMbuild](https://lapkb.github.io/Pmetrics/reference/PMbuild.html){target="_blank"} to compile the Pmetrics package.
- 
+
 3. Completed the [pre-workshop exercises](http://www.lapk.org/workshop/July2023/Pre-Workshop.html){target="_blank"}. 
 - You should have created a folder in your hard drive to store your Pmetrics projects. The suggested locations are "C:\\Pmetrics" for Windows users or "~/Pmetrics" for Mac/Linux users.
 - You should have loaded the Pmetrics library in R with `library(Pmetrics)` and created a *Workshop* folder within your *Pmetrics* folder using `PMtree("Workshop")`.
@@ -102,11 +102,13 @@ quiz(
            answer("Normal"),
            answer("Log-normal", correct = TRUE),
            allow_retry = TRUE),
-  question("Which primary parameters have interindividual variance?",
+  question("Which primary parameters have interindividual variance (IIV)?",
            answer("$\\theta_1$ (CL_int)"),
-           answer("$\\theta_2$ (CL_slope)", correct = TRUE),
+           answer("$\\theta_2$ (CL_slope)"),
            answer("$\\theta_3$ (V_slope)", correct = TRUE),
-           allow_retry = TRUE
+           allow_retry = TRUE,
+           incorrect = "IIV is on CL, not CL_int and CL_slope",
+           correct = "Yes, IIV is on V_slope, which defines V, and on CL, but not on CL_int and CL_slope."
   )
 )
 ```
@@ -125,13 +127,25 @@ quiz(caption = "Extracting necessary values",
               incorrect = "It should be 5.05."
      ),
      question("What is the typical value of $\\theta_2$ (CL_slope)?",
-              answer("9.60", correct = TRUE),
               type = "learnr_text",
-              incorrect = "It should be 9.60."
+               answer_fn(\(x){
+                x2 <- tidyup(x)
+                if(!is.na(stringr::str_extract(x2, stringr::regex("9.6", ignore_case = TRUE)))){
+                  return(correct())
+                }
+                return(incorrect())
+              }),
+              incorrect = "It should be 9.6."
      ),
-     question("What is the value of $\\omega$ for the standard deviation of the $\\eta$-distribution around $\\theta_2$? Hint: use the approximation formula above and the reported CV%. Round to three decimal places.",
-              answer("0.277", correct = TRUE),
+     question("What is the value of $\\omega$ for the standard deviation of the $\\eta$-distribution around CL? Hint: use the approximation formula above and the reported CV%. Round to three decimal places.",
               type = "learnr_text",
+              answer_fn(\(x){
+                x2 <- tidyup(x)
+                if(!is.na(stringr::str_extract(x2, stringr::regex(".277", ignore_case = TRUE)))){
+                  return(correct())
+                }
+                return(incorrect())
+              }),
               incorrect = "It should be 0.277.",
               correct = "Yes! It is simply the CV%/100."
      )
@@ -147,7 +161,7 @@ It's important to include covariate relationships with model parameters. The pap
 question("Try writing the equation from the paper that relates body weight to
 volume. Use *V* for volume, *V_slope* for $\\theta_3$ and *WT* for weight. Spacing and case don't matter.", type = "learnr_text",
 answer_fn(\(x){
-  x2 <- stringr::str_replace_all(x, "\\s+", "") 
+  x2 <- tidyup(x)
   if(!is.na(stringr::str_extract(x2, stringr::regex("V=V_slope\\*WT/81.8", ignore_case = TRUE)))){
     return(correct())
   }
@@ -330,9 +344,11 @@ In reality, although we indeed want to simulate **3** primary parameters, in thi
 The Pmetrics simulator always simulates from normal distributions with a mean and standard deviation. It is possible to log-transform parameter values, and in fact we will do that in this model. 
 
 1. On the Primary Parameters tab of the app, name your 3 variables:
+
 * etaCL
 * etaV
 * wt
+
 2. Choose to specify as mean/SD.
 3. Use a mean of 0 for both etaCL and etaV. 
 4. For standard deviation, go back to your second quiz and recall the value you found for $\omega_{CL}$. Multiply that number by 2 to allow for a wider simulation range and enter it for the SD on etaCL.
@@ -381,8 +397,8 @@ The secondary equation for volume is then `V = 22.3 * WT/81.1 * exp(etaV)`. We s
 question("Try writing the equation for clearance.
 Use *CL* for clearance, and *ccr* for creatinine clearance. Spacing and case don't matter.", type = "learnr_text",
 answer_fn(\(x){
-  x2 <- stringr::str_replace_all(x, "\\s+", "") 
-  if(!is.na(stringr::str_extract(x2, stringr::regex("CL=\\(5\\.05\\+9\\.60\\*ccr/89\\)\\*exp\\(etaCL\\)", ignore_case = TRUE)))){
+  x2 <- tidyup(x)
+  if(!is.na(stringr::str_extract(x2, stringr::regex("CL=\\(5\\.05\\+9\\.6\\*ccr/89\\)\\*exp\\(etaCL\\)", ignore_case = TRUE)))){
     return(correct())
   }
   return(incorrect())
@@ -549,7 +565,7 @@ quiz(
            answer("`cov = diag(c((2*0.277)^2, (2*0.252)^2, (2*25)^2)`", correct = TRUE),
            correct = "Nice job. You remembered to double the standard deviations before squaring them.",
            incorrect = "Don't forget you need to focus on standard deviation of each random parameter ($\\omega$$), double it, and then sqaure it."
-)
+  )
 )
 ```
 
@@ -579,7 +595,7 @@ sim1 <- run1$sim(...)
 ```{r echo = TRUE, eval = FALSE}
 sim1 <- PM_sim$run(poppar, model, data,...)
 ```
-  
+
 The advantage of the first approach is that `poppar` can be obtained from the `PM_final` object inside `run1`, and the model and data are also fields inside `run1`. You can replace the data to use a different template.
 
 However, if you don't have a prior run, such as the case in this workshop where we are simulating from the literature, you need to go with approach two. That's why we've been learning to make the data, model and `poppar`.
@@ -608,10 +624,10 @@ You now have all the arguments for your call to `PM_sim$run()`.
 Try your best to write the code in your Rscript, Workshop.R. Assign the results to `sim1`.
 
 <details>
-  <summary>Check your work.</summary>
-  `sim1 <- PM_sim$run(model = mod1, data = dat, poppar = poppar, limits = NA, predInt = 1)`
-  
-  This assumes you already defined mod1, dat, and poppar using the code that we devloped earlier and copied into Workshop.R.
+<summary>Check your work.</summary>
+`sim1 <- PM_sim$run(model = mod1, data = dat, poppar = poppar, limits = NA, predInt = 1)`
+
+This assumes you already defined mod1, dat, and poppar using the code that we devloped earlier and copied into Workshop.R.
 </details>
 
 
@@ -740,9 +756,9 @@ simlabels <- c("4 gm over 0.5h, q8h", "4 gm over 4h, q8h", "12 gm/day continuous
 
 #using a previously created simulation built into Pmetrics
 pta1 <- sim1$pta(simlabels = simlabels,
-                  targets = c(0.25, 0.5, 1, 2, 4, 8, 16, 32, 64),
-                  target.type = "time", free.fraction = 0.81,
-                  success = 0.4, start = 48, end = 72)
+                 targets = c(0.25, 0.5, 1, 2, 4, 8, 16, 32, 64),
+                 target.type = "time", free.fraction = 0.81,
+                 success = 0.4, start = 48, end = 72)
 
 #using a sampled distribution of MICs from EUCAST
 #for Pseudomonas aeruginosa and piperacillin/tazobactam
@@ -754,9 +770,9 @@ pip_pseudo <- data.frame(
 )
 
 pta2 <- sim1$pta(simlabels = simlabels,
-                  targets = makePTAtarget(pip_pseudo),
-                  target.type = "time", free.fraction = 0.81,
-                  success = 0.4, start = 48, end = 72)
+                 targets = makePTAtarget(pip_pseudo),
+                 target.type = "time", free.fraction = 0.81,
+                 success = 0.4, start = 48, end = 72)
 
 ```
 
@@ -824,11 +840,11 @@ p %>% plotly::add_bars(x = ~mic,
                        width = ~mic*0.2,
                        showlegend = FALSE,
                        inherit = FALSE
-                       ) %>%
+) %>%
   plotly::layout(
-         yaxis = list(title = 
-                        list(text = "<b>Proportion with %T>MIC ≥ 60%<br><span style='color:Dodgerblue; opacity:0.6'>MIC Frequency</span></b>")),
-         font = list(size = 10))
+    yaxis = list(title = 
+                   list(text = "<b>Proportion with %T>MIC ≥ 60%<br><span style='color:Dodgerblue; opacity:0.6'>MIC Frequency</span></b>")),
+    font = list(size = 10))
 
 ```
 
@@ -873,7 +889,7 @@ question("Which regimen had the best PTA?",
          answer("4 gm over 0.5 hours every 8 hours"),
          answer("4 gm over 4 hours every 8 hours", correct = TRUE),
          answer("12 gm continuously"),
-           allow_retry = TRUE)
+         allow_retry = TRUE)
 ```
 
 Interestingly, the regimen with infusions over 4 hours given every 8 hours had a slightly higher PTA than the continuous infusion, likely because the success definition was only %T > MIC of 40%. With a continous infusion, you are all above or all below the MIC, while an intermittent can allow for success if the required %T > MIC is not large and a significant portion of the time the concentrations are below the target.
@@ -889,7 +905,7 @@ question("What will you have to change to accomplish this?",
          answer("predInt"),
          correct = "That's right. You can name your new poppar object as `poppar2`.",
          incorrect = "Try again. Which object contains the variances for the random parameters?",
-           allow_retry = TRUE)
+         allow_retry = TRUE)
 ```
 
 Write the R code to make `sim2`, copy it into your R script and run it. You can check your work with the *Solution* button, but there are several ways to write this R code, so if yours doesn't match the solution we provided exactly, your code might still work!
@@ -900,8 +916,8 @@ Write the R code to make `sim2`, copy it into your R script and run it. You can 
 
 ```{r sim2-solution}
 poppar2 <- list(wt = 1, 
-               mean = c(0, 0, 82), 
-               cov = diag(c((3*0.277)^2, (3*0.252)^2, (3*25)^2)))
+                mean = c(0, 0, 82), 
+                cov = diag(c((3*0.277)^2, (3*0.252)^2, (3*25)^2)))
 
 sim2 <- PM_sim$run(model = mod1, data = dat, 
                    poppar = poppar2, 
@@ -993,9 +1009,9 @@ You should now have `dat2` and `mod2` which have both WT and CCR as random varia
 What needs to be done to `poppar`? Think about that for a minute, maybe try writing some code  then check your answer. **Hint**, you can look at `mod2` and get the SD for CCR based on the range you created above, and of course $variance = SD^2$. Don't forget to inflate that SD by 2 before squaring it.
 
 <details>
-  <summary>Click here for answer.</summary>
-  We need to expand the `mean` and `cov` to include CCR, so `mean` should be a vector with 4 values and `cov` should be a 4x4 matrix.
-  
+<summary>Click here for answer.</summary>
+We need to expand the `mean` and `cov` to include CCR, so `mean` should be a vector with 4 values and `cov` should be a 4x4 matrix.
+
 ```{r echo = TRUE, eval = FALSE}
 poppar3 <- list(wt = 1, 
                 mean = c(0, 0, 82, 90), 
@@ -1003,7 +1019,7 @@ poppar3 <- list(wt = 1,
                              (2*0.252)^2, 
                              (2*25)^2, 
                              (2*16.7)^2))
-                )
+)
 ```
 </details>
 
@@ -1017,8 +1033,8 @@ Try creating the simulation using these elements. Call it `sim2`. Then repeat th
 Check the simulated CCR by summarizing the simulation "parValues" field, and then plot `pta4`.
 
 <details>
-  <summary>Click here for answer.</summary>
-  
+<summary>Click here for answer.</summary>
+
 ```{r echo = TRUE, eval = FALSE}
 sim2 <- PM_sim$run(model = mod2, data = dat2, 
                    poppar = poppar3, 
@@ -1044,13 +1060,13 @@ What happens if you change `success` to 1, i.e. concentrations above MIC for 100
 * Remake the PTA, plot and summarize it in your R script.
 
 <details>
-  <summary>Click here for answer.</summary>
-  
+<summary>Click here for answer.</summary>
+
 ```{r echo = TRUE, eval = FALSE}
 pta100 <- sim1$pta(simlabels = simlabels,
-                  targets = c(0.25, 0.5, 1, 2, 4, 8, 16, 32, 64),
-                  target.type = "time", free.fraction = 0.81,
-                  success = 1, start = 48, end = 72)
+                   targets = c(0.25, 0.5, 1, 2, 4, 8, 16, 32, 64),
+                   target.type = "time", free.fraction = 0.81,
+                   success = 1, start = 48, end = 72)
 
 
 pta100$plot()
@@ -1095,13 +1111,13 @@ Now "success" will be the proportion of subjects who exceed the target at time 7
 
 
 <details>
-  <summary>Click here for sample code</summary>
-  
+<summary>Click here for sample code</summary>
+
 ```{r echo = TRUE, eval = FALSE}
 ptaTox <- sim1$pta(simlabels = simlabels,
-                  targets = c(100, 120, 160),
-                  target.type = 72, free.fraction = 0.81,
-                  success = 1, start = 48, end = 72)
+                   targets = c(100, 120, 160),
+                   target.type = 72, free.fraction = 0.81,
+                   success = 1, start = 48, end = 72)
 
 
 ptaTox$plot()
