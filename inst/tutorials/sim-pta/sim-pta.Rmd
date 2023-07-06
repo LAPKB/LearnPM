@@ -57,14 +57,14 @@ dat <- PM_data$new()$
 This tutorial was designed to accompany a workshop, but may be completed independently. We assume that you have completed several tasks.
 
 1. Installed R, Rstudio, and Pmetrics.
-- If you have not done so already, you can obtain everything you need by following these [instructions](http://www.lapk.org/Pmetrics_install.php). **Important**: For this workshop we are using a beta version of Pmetrics, v. 2.0.4. Prior versions will not work. Replace the command in step 4 with `devtools::install_github("LAPKB/Pmetrics@dev")`. 
+- If you have not done so already, you can obtain everything you need by following these [instructions](http://www.lapk.org/Pmetrics_install.php){target="_blank"}. **Important**: For this workshop we are using a beta version of Pmetrics, v. 2.1.0. Prior versions will not work. Replace the command in step 4 with `devtools::install_github("LAPKB/Pmetrics@dev")`. 
 
-2. You have also run [PMbuild](https://lapkb.github.io/Pmetrics/reference/PMbuild.html) to compile the Pmetrics package.
+2. You have also run [PMbuild](https://lapkb.github.io/Pmetrics/reference/PMbuild.html){target="_blank"} to compile the Pmetrics package.
  
-3. Completed the [pre-workshop exercises](http://www.lapk.org/workshop/July2023/Pre-Workshop.html). 
+3. Completed the [pre-workshop exercises](http://www.lapk.org/workshop/July2023/Pre-Workshop.html){target="_blank"}. 
 - You should have created a folder in your hard drive to store your Pmetrics projects. The suggested locations are "C:\\Pmetrics" for Windows users or "~/Pmetrics" for Mac/Linux users.
 - You should have loaded the Pmetrics library in R with `library(Pmetrics)` and created a *Workshop* folder within your *Pmetrics* folder using `PMtree("Workshop")`.
-- Your *Workshop* folder will contain subfolders as described in the help for [PMtree](https://lapkb.github.io/Pmetrics/reference/PMtree.html).
+- Your *Workshop* folder will contain subfolders as described in the help for [PMtree](https://lapkb.github.io/Pmetrics/reference/PMtree.html){target="_blank"}.
 
 **Let's get started!**
 
@@ -178,7 +178,7 @@ To do this, we are going to simulate steady-state PK profiles based on the piper
 
 There are two ways to create the data template. The first is to use a spreadsheet program like Excel. The second is to create a template on the fly in R. Let's look at both methods.
 
-Be sure to look at the article on Pmetrics [data objects](https://lapkb.github.io/Pmetrics/articles/data.html) for details on the column headers and meanings of the columns.
+Be sure to look at the article on Pmetrics [data objects](https://lapkb.github.io/Pmetrics/articles/data.html){target="_blank"} for details on the column headers and meanings of the columns.
 
 ### Option 1: Create in spreadsheet program
 
@@ -273,7 +273,7 @@ dat <- PM_data$new()$
 2. Copy and paste your full data template creation code into your Rscript and save it.
 3. You can also copy and paste the file you made in Option 1 into the *Sim* folder. Call that file "simtpt.csv", short for "simulation template".
 4. In your *Workshop.R* script, save the object you created as a second template file.
-- Change the working directory with [setwd](https://rdrr.io/r/base/getwd.html). 
+- Change the working directory with [setwd](https://rdrr.io/r/base/getwd.html){target="_blank"}. 
 * You can first execute line 6 to change the working directory to the *Runs* folder in your project. 
 * Then use this command to switch to the *Sim* folder: `setwd("../Sim")`
 - Use `dat$write("simtpt2.csv")` to save the `PM_data` object you made into the *Sim* folder of your project.
@@ -297,7 +297,7 @@ question("Does this model use algebraic equations or ODEs?",
 For this portion of the tutorial, we will use the model builder app in Pmetrics. 
 
 1. Ensure that Pmetrics is loaded in R with `library(Pmetrics)`. This is the first line of code in your *Workshop.R* file in your project tree.
-2. Use [build_model](https://lapkb.github.io/Pmetrics/reference/build_model.html) to launch the app.
+2. Use [build_model](https://lapkb.github.io/Pmetrics/reference/build_model.html){target="_blank"} to launch the app.
 3. Choose the library model with CL and V and one compartment. Hit the "Select" button.
 4. Let's visit each section in turn.
 
@@ -413,7 +413,7 @@ knitr::include_graphics("images/sec.png")
 
 The good news is that there isn't anything for you to do on the EQuatioN tab! Pmetrics has added a differential equation which you can see in both the Model Equations box and in the `eqn` block of the Model List below. 
 
-However, you can also see a "token" in the Model List that indicates this model will be solved algebraically. The differential equation is only for the purposes of structural model plotting in the diagram and for transparency, since algebraic solutions for models with more than one compartment are quite difficult to interpret. In contrast, once you are used to looking at pharmacokinetic/pharmacodynamic model differential equations, you can rapidly understand the structure. For more details on the token, you can read our article on [Models](https://lapkb.github.io/Pmetrics/articles/models.html).
+However, you can also see a "token" in the Model List that indicates this model will be solved algebraically. The differential equation is only for the purposes of structural model plotting in the diagram and for transparency, since algebraic solutions for models with more than one compartment are quite difficult to interpret. In contrast, once you are used to looking at pharmacokinetic/pharmacodynamic model differential equations, you can rapidly understand the structure. For more details on the token, you can read our article on [Models](https://lapkb.github.io/Pmetrics/articles/models.html){target="_blank"}.
 
 Note that this model is very simple structurally, being only one compartment with no oral dosing. You can click the "i" button to understand more about how to write differential equations if you build your own model from scratch. All that work with $\theta$s and $\eta$s has paid off and the model equation reduces to a single parameter Ke!
 
@@ -429,7 +429,7 @@ Lastly we come to the outputs, where we define in the model how to calculate our
 
 You can click on the "i" button for more information on how to write these output equations, but Pmetrics has already completed one for you based on the model you chose.
 
-There is also nothing for you to do here because Pmetrics knows how to define the output based on the model you selected from the library. The fields related to assay and model error are more relevant when you are trying to fit models to data, rather than simulating. They describe how observations are weighted in the fitting process (assay noise) as well as additional noise (model error) associated with model misspecification and in the data (e.g. small errors in recorded sample times). Again, for more details refer to  [Models](https://lapkb.github.io/Pmetrics/articles/models.html).
+There is also nothing for you to do here because Pmetrics knows how to define the output based on the model you selected from the library. The fields related to assay and model error are more relevant when you are trying to fit models to data, rather than simulating. They describe how observations are weighted in the fitting process (assay noise) as well as additional noise (model error) associated with model misspecification and in the data (e.g. small errors in recorded sample times). Again, for more details refer to  [Models](https://lapkb.github.io/Pmetrics/articles/models.html){target="_blank"}.
 
 These are not used for simulation although as we'll see, there are options to add noise to simulated inputs and outputs.
 
@@ -443,7 +443,7 @@ At last you are ready to use the model! First, click the "Save" button. If your 
 knitr::include_graphics("images/save.png")
 ```
 
-A file named "model.txt" is saved in your current working directory. You can double check this in R with [getwd](https://rdrr.io/r/base/getwd.html). 
+A file named "model.txt" is saved in your current working directory. You can double check this in R with [getwd](https://rdrr.io/r/base/getwd.html){target="_blank"}. 
 
 
 In your Mac Finder, Windows Explorer, or Linux File Manager, copy "model.txt" from its folder into the /src folder of your Workshop project.
@@ -568,7 +568,7 @@ poppar <- list(wt = 1, mean = c(0, 0, 82), cov = diag(c((2*0.277)^2, (2*0.252)^2
 
 ## Simulator command
 
-At last we are ready to simulate. As described in [Simulation](https://lapkb.github.io/Pmetrics/articles/simulation.html) vignette, there are two ways to run the simulator. 
+At last we are ready to simulate. As described in [Simulation](https://lapkb.github.io/Pmetrics/articles/simulation.html){target="_blank"} vignette, there are two ways to run the simulator. 
 
 * If starting from the results of a population analysis, e.g. with NPAG or IT2B
 ```{r echo = TRUE, eval = FALSE}
@@ -584,7 +584,7 @@ The advantage of the first approach is that `poppar` can be obtained from the `P
 
 However, if you don't have a prior run, such as the case in this workshop where we are simulating from the literature, you need to go with approach two. That's why we've been learning to make the data, model and `poppar`.
 
-The [Simulation](https://lapkb.github.io/Pmetrics/articles/simulation.html) vignette and the help for the underlying simulator function [SIMrun](https://lapkb.github.io/Pmetrics/reference/SIMrun.html) detail all the arguments you can use to change the behavior of the simulator. Here, we'll focus on two:
+The [Simulation](https://lapkb.github.io/Pmetrics/articles/simulation.html){target="_blank"} vignette and the help for the underlying simulator function [SIMrun](https://lapkb.github.io/Pmetrics/reference/SIMrun.html){target="_blank"} detail all the arguments you can use to change the behavior of the simulator. Here, we'll focus on two:
 
 * limits
 * predInt
@@ -621,9 +621,9 @@ Try your best to write the code in your Rscript, Workshop.R. Assign the results 
 
 Let's look at the results of the simulation. They should be stored in an object called `sim1`. To understand the struture of `sim1`, simply print it to the console by typing its name and pressing <Return>.
 
-You'll see that it is a [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html), which contains a `data` field and several methods. The `data` field contains a list of all the [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html) objects, one for each of the three template dosing regimens in your data template file.
+You'll see that it is a [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="_blank"}, which contains a `data` field and several methods. The `data` field contains a list of all the [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="_blank"} objects, one for each of the three template dosing regimens in your data template file.
 
-To plot from a [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html) object, call the method and use the `at` argument to choose which of the list of `PM_sim` objects you want to plot.
+To plot from a [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="_blank"} object, call the method and use the `at` argument to choose which of the list of `PM_sim` objects you want to plot.
 
 Copy this code into your R script.
 
@@ -639,11 +639,11 @@ knitr::include_graphics("images/sim1plot.png")
 
 **Try plotting the other two simulated regimens on your own.**
 
-The help for [plot.PM_sim](https://lapkb.github.io/Pmetrics/reference/plot.PM_sim.html) documents all the options for plotting. Pmetrics uses the `plotly` package for default plotting. Plotly is a package originally developed in Python but ported to R.  Help is generally available by searching the internet for "R plotly ..." as well as help files for any plotly function. Try `?plot_ly` and then click `Index` at the bottom of the page. You can also use the [schema](https://rdrr.io/cran/plotly/man/schema.html) command to invoke an expandable list of all plotly plots and arguments. Lastly, view the Pmetrics article on [plotly](https://lapkb.github.io/Pmetrics/articles/data.html)
+The help for [plot.PM_sim](https://lapkb.github.io/Pmetrics/reference/plot.PM_sim.html){target="_blank"} documents all the options for plotting. Pmetrics uses the `plotly` package for default plotting. Plotly is a package originally developed in Python but ported to R.  Help is generally available by searching the internet for "R plotly ..." as well as help files for any plotly function. Try `?plot_ly` and then click `Index` at the bottom of the page. You can also use the [schema](https://rdrr.io/cran/plotly/man/schema.html){target="_blank"} command to invoke an expandable list of all plotly plots and arguments. Lastly, view the Pmetrics article on [plotly](https://lapkb.github.io/Pmetrics/articles/data.html){target="_blank"}
 
 ## A little more advanced plotting
 
-There is no pre-defined Pmetrics plot function to examine the simulated parameter values, but of course in R you can do this. Remember that sim1 is a list of [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html) objects, so you need to access the individual elements.
+There is no pre-defined Pmetrics plot function to examine the simulated parameter values, but of course in R you can do this. Remember that sim1 is a list of [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="_blank"} objects, so you need to access the individual elements.
 
 First, look at the first row of simulated parameter values for each regimen. Copy and execute the following code in your R script.
 
@@ -651,7 +651,7 @@ First, look at the first row of simulated parameter values for each regimen. Cop
 purrr::map_df(sim1$data, \(x) x$parValues[1,])
 ```
 
-What does this code do? It uses the [map_df](https://rdrr.io/cran/purrr/man/map_dfr.html) function in the *purrr* package from tidyverse to cycle through each of the list elements in our `sim1` object. The *purrr* package is all about working with lists in R. The `\(x)` is *purrr*'s shorthand way of defining a function of `x`, where `x` is the current member of the first argument to `map_df`, in this case, `sim1$data`, i.e., the output from our first simulated regimen. So we are looking at the first row of each `parValues` data field for each simulated output. 
+What does this code do? It uses the [map_df](https://rdrr.io/cran/purrr/man/map_dfr.html){target="_blank"} function in the *purrr* package from tidyverse to cycle through each of the list elements in our `sim1` object. The *purrr* package is all about working with lists in R. The `\(x)` is *purrr*'s shorthand way of defining a function of `x`, where `x` is the current member of the first argument to `map_df`, in this case, `sim1$data`, i.e., the output from our first simulated regimen. So we are looking at the first row of each `parValues` data field for each simulated output. 
 
 What do you notice? They are all the same! That's the expected behavior. We reuse the same seed to start the random parameter selection for each regimen. That ensures we are comparing the same "subjects" across regimens and that differnces are entirely due to the regimen, and not due to differing parameter values. To override this behavior, you can use the `seed` argument with as many seeds as you have subjects in your template.
 
@@ -680,13 +680,13 @@ parValues |> plotly::plot_ly(x = ~etaCL, type = "histogram", nbinsx = 50)
 
 ```
 
-Notice the use of the pipe `%>%` or `|>` for plotly. This is an amazing innovation in Tidyverse (the magrittr package), which developed the `%>%` operator as a method of chaining the output of one function to the input of the next. [Tidyverse](https://www.tidyverse.org) is a powerful set of libraries for R that permit methodical, advanced data manipulation. You can load it with `library(tidyverse)`. Base R has now adopted the pipe, with one fewer characters to type. Any function in R which takes the data as the first argument, usually named `x`, will work with a pipe. See `?"%>%"` and `?"|>"` for more details on these useful operators.
+Notice the use of the pipe `%>%` or `|>` for plotly. This is an amazing innovation in Tidyverse (the magrittr package), which developed the `%>%` operator as a method of chaining the output of one function to the input of the next. [Tidyverse](https://www.tidyverse.org){target="_blank"} is a powerful set of libraries for R that permit methodical, advanced data manipulation. You can load it with `library(tidyverse)`. Base R has now adopted the pipe, with one fewer characters to type. Any function in R which takes the data as the first argument, usually named `x`, will work with a pipe. See `?"%>%"` and `?"|>"` for more details on these useful operators.
 
 **Plot the other simulated parameters on your own.**
 
 ## Summaries of simulations
 
-[PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html) objects contain a method to summarize the results, and there is a corresponding method for [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html) objects using the `at = ` argument that you have already seen with the `PM_sim$plot()` method.
+[PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="_blank"} objects contain a method to summarize the results, and there is a corresponding method for [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="_blank"} objects using the `at = ` argument that you have already seen with the `PM_sim$plot()` method.
 
 Copy the following code into your R script.
 
@@ -710,7 +710,7 @@ Now we group the simulation by "id", then summarize to obtain the mean, sd, medi
 sim1$summary(at = 1, field = "obs", by = "id", individual = TRUE)
 ```
 
-To obtain the areas under the curve (AUC), you can use the `$auc` method attached to [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html) objects.
+To obtain the areas under the curve (AUC), you can use the `$auc` method attached to [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="_blank"} objects.
 
 ```{r echo = TRUE, eval = FALSE}
 sim1$auc(at = 1) #auc for all times 0 to 72
@@ -727,12 +727,12 @@ For example, it could be a certain AUC or time above a threshold.
 
 Pmetrics allows you to create a PTA in two ways.
 
-* Use the `$pta()` method attached to [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html) and [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html) objects.
+* Use the `$pta()` method attached to [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="_blank"} and [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="_blank"} objects.
 * Use `PM_pta$new()`.
 
 The only difference between these two is that with the first, you do not have to supply the name of your simulation object because you are operating upon it already. 
 
-**Copy the code below into your R script** to create a PTA. Refer to [makePTA](https://lapkb.github.io/Pmetrics/reference/makePTA.html) for details on the arguments to the method.
+**Copy the code below into your R script** to create a PTA. Refer to [makePTA](https://lapkb.github.io/Pmetrics/reference/makePTA.html){target="_blank"} for details on the arguments to the method.
 
 ```{r echo = TRUE, eval = FALSE}
 #first define labels for simulated regimens
@@ -762,16 +762,16 @@ pta2 <- sim1$pta(simlabels = simlabels,
 
 **Some things to point out...**
 
-We'll say again that you must supply simulation data, which has been previously generated. By using the `PM_sim$pta()` method on `sim1`, the simulation data are embedded in the object. If you use `PM_pta$new()`, you have to supply the name of a [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html) object yourself.
+We'll say again that you must supply simulation data, which has been previously generated. By using the `PM_sim$pta()` method on `sim1`, the simulation data are embedded in the object. If you use `PM_pta$new()`, you have to supply the name of a [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="_blank"} object yourself.
 
 Details of key arguments follow.
 
 * **simlabels** Optional character vector of labels for each simulation (i.e. subject in the data template). Default is `c("Regimen 1", "Regimen 2",...)`.
-* **targets** A vector of pharmacodynamic targets, such as Minimum Inhibitory Concentrations (MICs), e.g. 'c(0.25, 0.5,1,2,4,8,16,32)'. In the second PTA, instead of a uniform distribution for MIC, we used a sampled distribution using [makePTAtarget](https://lapkb.github.io/Pmetrics/reference/makePTAtarget.html) from real data (EUCAST).
-* **target.type** Here we chose "time" to indicate that our PDI is proportion of the intervalspecified by `start` and `end` that concentrations exceed the target. This argument can also be a numeric or character vector, length 1. If numeric, must correspond to an observation time common to all the [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html) objects in the simulation data, rounded to the nearest hour. In this case, the target statistic will be the ratio of observation at time `target.type` to `target`. This enables testing of a specific timed concentration (e.g. one hour after a dose or C1) which may be called a peak, but is not actually the maximum drug concentration. Be sure that the time in the simulated data is used, e.g. `target = 121` after a dose given at time 120. In addition to "time", character values may be one of "auc", "peak", or "min", for, respectively, ratio of area under the curve within the `start:end` time range to target, ratio of peak concentration within the time range to target, or ratio of minimum concentration within the time range to target.
+* **targets** A vector of pharmacodynamic targets, such as Minimum Inhibitory Concentrations (MICs), e.g. 'c(0.25, 0.5,1,2,4,8,16,32)'. In the second PTA, instead of a uniform distribution for MIC, we used a sampled distribution using [makePTAtarget](https://lapkb.github.io/Pmetrics/reference/makePTAtarget.html){target="_blank"} from real data (EUCAST).
+* **target.type** Here we chose "time" to indicate that our PDI is proportion of the intervalspecified by `start` and `end` that concentrations exceed the target. This argument can also be a numeric or character vector, length 1. If numeric, must correspond to an observation time common to all the [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="_blank"} objects in the simulation data, rounded to the nearest hour. In this case, the target statistic will be the ratio of observation at time `target.type` to `target`. This enables testing of a specific timed concentration (e.g. one hour after a dose or C1) which may be called a peak, but is not actually the maximum drug concentration. Be sure that the time in the simulated data is used, e.g. `target = 121` after a dose given at time 120. In addition to "time", character values may be one of "auc", "peak", or "min", for, respectively, ratio of area under the curve within the `start:end` time range to target, ratio of peak concentration within the time range to target, or ratio of minimum concentration within the time range to target.
 * **success** A single value specifying the success statistic, e.g. 0.4 for proportion time (end-start) above target. If we were using `target.type = "peak"`, perhaps we could have chosen `success = 100` to indicate a goal peak:target of 100.
 
-The created objects `pta1` and `pta2` are [PM_pta](https://lapkb.github.io/Pmetrics/reference/PM_pta.html) objects, which you can look at by typing `pta1` or `pta2` into the R console. `PM_pta()` objects have two data fields:
+The created objects `pta1` and `pta2` are [PM_pta](https://lapkb.github.io/Pmetrics/reference/PM_pta.html){target="_blank"} objects, which you can look at by typing `pta1` or `pta2` into the R console. `PM_pta()` objects have two data fields:
 
 * **results** A data frame with the following columns: *simnum*, *id*, *target*, *pdi.* 
 - *simnum* is the number of the simulation
@@ -787,8 +787,8 @@ They also have several methods:
 
 * **clone()** to make a copy.
 * **save()** and **load()** to save/load as an .rds file.
-* **plot()** to call [plot.PM_pta](https://lapkb.github.io/Pmetrics/reference/plot.PM_pta.html).
-* **summary()** to call [summary.PMpta](https://lapkb.github.io/Pmetrics/reference/summary.PMpta.html)
+* **plot()** to call [plot.PM_pta](https://lapkb.github.io/Pmetrics/reference/plot.PM_pta.html){target="_blank"}.
+* **summary()** to call [summary.PMpta](https://lapkb.github.io/Pmetrics/reference/summary.PMpta.html){target="_blank"}
 
 ## Plotting PTA
 
