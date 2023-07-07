@@ -473,11 +473,11 @@ Then paste next to the assignment operator (`<-`). Including the data template w
 ```{r mod-script, echo = TRUE, eval = FALSE}
 #make the data
 dat <- PM_data$new()$
-  addEvent(id = 1, time = 0, dose = 4000, dur = 0.5, addl = 8, ii = 8, wt = -1, ccr = 90)$
+  addEvent(id = 1, time = 0, dose = 4000, dur = 0.5, addl = 8, ii = 8, ccr = 90)$
   addEvent(id = 1, time = 72, out = -1)$
-  addEvent(id = 2, time = 0, dose = 4000, dur = 4, addl = 8, ii = 8, wt = -1, ccr = 90)$
+  addEvent(id = 2, time = 0, dose = 4000, dur = 4, addl = 8, ii = 8, ccr = 90)$
   addEvent(id = 2, time = 72, out = -1)$
-  addEvent(id = 3, time = 0, dose = 12000, dur = 24, addl = 2, ii = 24, wt = -1, ccr = 90)$
+  addEvent(id = 3, time = 0, dose = 12000, dur = 24, addl = 2, ii = 24, ccr = 90)$
   addEvent(id = 3, time = 72, out = -1, validate = TRUE)
 
 #define the model
@@ -900,15 +900,30 @@ Go back and create another simulation called `sim2` and make $\omega$ for each o
 ```{r pta-change1}
 question("What will you have to change to accomplish this?",
          answer("data template"),
-         answer("model"),
+         answer("model", correct = TRUE),
          answer("poppar", correct = TRUE),
          answer("predInt"),
-         correct = "That's right. You can name your new poppar object as `poppar2`.",
-         incorrect = "Try again. Which object contains the variances for the random parameters?",
+         correct = "That's right. You can name your new poppar object as `poppar2` and your new model as `mod2`.",
+         incorrect = "Try again. Which object contains the variances for the random parameters? Don't forget to adjust the model to increase the same variances for the random parameters.",
          allow_retry = TRUE)
 ```
 
-Write the R code to make `sim2`, copy it into your R script and run it. You can check your work with the *Solution* button, but there are several ways to write this R code, so if yours doesn't match the solution we provided exactly, your code might still work!
+
+For the model try using the `$clone()` and `$update` methods as below. 
+
+```{r echo = TRUE, eval = FALSE}
+mod2 <- mod1$clone() #this makes a copy of mod1
+
+#now update the primary parameters
+mod2$update(list(
+  pri = list(
+    etaCL = msd(0, 3*0.277),
+    etaV = msd(0, 3*0.252),
+    wt = msd(82,3*25))
+))
+```
+
+Write the R code to make your new `poppar2` and  `sim2`, copy it into your R script and run it. You can check your work with the *Solution* button, but there are several ways to write this R code, so if yours doesn't match the solution we provided exactly, your code might still work!
 
 ```{r sim2, exercise = TRUE}
 
@@ -919,7 +934,7 @@ poppar2 <- list(wt = 1,
                 mean = c(0, 0, 82), 
                 cov = diag(c((3*0.277)^2, (3*0.252)^2, (3*25)^2)))
 
-sim2 <- PM_sim$run(model = mod1, data = dat, 
+sim2 <- PM_sim$run(model = mod2, data = dat, 
                    poppar = poppar2, 
                    limits = NA, predInt = 1)
 ```
@@ -991,22 +1006,22 @@ Try to now simulate CCR as a random variable with a range between 30 and 130.
 
 You will need to remake your data, model, and poppar objects. For the data, copy the code for `dat` and make a new object called `dat2`. Remove the CCR entries. 
 
-For the model try using the `$clone()` and `$update` methods as below. 
+For the model again use the `$clone()` and `$update` methods as below. 
 
 ```{r echo = TRUE, eval = FALSE}
-mod2 <- mod1$clone() #this makes a copy of mod1
+mod3 <- mod1$clone() #this makes a copy of mod1
 
 #now update it by adding ccr as a primary parameter
 #and deleting it from the covariates
-mod2$update(list(
+mod3$update(list(
   pri = list(ccr = ab(30, 130)),
   cov = NULL
 ))
 ```
 
-You should now have `dat2` and `mod2` which have both WT and CCR as random variables. 
+You should now have `dat2` and `mod3` which have both WT and CCR as random variables. 
 
-What needs to be done to `poppar`? Think about that for a minute, maybe try writing some code  then check your answer. **Hint**, you can look at `mod2` and get the SD for CCR based on the range you created above, and of course $variance = SD^2$. Don't forget to inflate that SD by 2 before squaring it.
+What needs to be done to `poppar`? Think about that for a minute, maybe try writing some code  then check your answer. **Hint**, you can look at `mod3` and get the SD for CCR based on the range you created above, and of course $variance = SD^2$. Don't forget to inflate that SD by 2 before squaring it.
 
 <details>
 <summary>Click here for answer.</summary>
@@ -1025,10 +1040,10 @@ poppar3 <- list(wt = 1,
 
 Now we have the three mandatory elements to conduct a simulation
 * **data template** dat2
-* **model** mod2
+* **model** mod3
 * **poppar** poppar3
 
-Try creating the simulation using these elements. Call it `sim2`. Then repeat the PTA (calling it `pta4`) as you did for `pta1` but using `sim2`. 
+Try creating the simulation using these elements. Call it `sim3`. Then repeat the PTA (calling it `pta4`) as you did for `pta1` but using `sim3`. 
 
 Check the simulated CCR by summarizing the simulation "parValues" field, and then plot `pta4`.
 
@@ -1036,17 +1051,17 @@ Check the simulated CCR by summarizing the simulation "parValues" field, and the
 <summary>Click here for answer.</summary>
 
 ```{r echo = TRUE, eval = FALSE}
-sim2 <- PM_sim$run(model = mod2, data = dat2, 
+sim3 <- PM_sim$run(model = mod3, data = dat2, 
                    poppar = poppar3, 
                    limits = NA, predInt = 1)
 
-pta4 <- sim2$pta(simlabels = simlabels,
+pta4 <- sim3$pta(simlabels = simlabels,
                  targets = c(0.25, 0.5, 1, 2, 4, 8, 16, 32, 64),
                  target.type = "time", free.fraction = 0.81,
                  success = 0.4, start = 48, end = 72)
 
 
-sim2$summary(at = 1, field = "parValues")
+sim3$summary(at = 1, field = "parValues")
 pta4$plot()
 ```
 </details>
