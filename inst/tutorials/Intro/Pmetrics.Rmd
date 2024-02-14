@@ -1,5 +1,7 @@
 ---
-title: "Learn Pmetrics"
+title: "Fit models using Pmetrics"
+tutorial:
+    id: "fit-models"
 output: 
   learnr::tutorial:
     css: css/style.css
@@ -13,20 +15,70 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, context="server"}
 library(learnr)
 library(Pmetrics)
 library(tidyverse)
+library(gradethis)
 gradethis::gradethis_setup()
 knitr::opts_chunk$set(echo = TRUE)
-exData <- PM_data$new("data/src/ex.csv")
-mod1 <- PM_model$new("data/src/model.txt")
+wd<-tempdir()
+setwd(wd)
+PM_tutorial(auto_confirm=TRUE)
+exData <- PM_data$new("Examples/src/ex.csv")
+mod1 <- PM_model$new("Examples/src/model.txt")
+
 ```
 
-# Introduction
+# Welcome
+Welcome to the Pmetrics model fitting tutorial. This tutorial will briefly introduce you to the R programming language and the Pmetrics modeling framework.
+The man topics of this tutorial are:
 
-This tutorial will introduce you to R and Pmetrics programming functions
-and techniques. For any function, you can get help by typing
+* Create and maipulate `PM_data` and `PM_model` objects.
+* Use those objects to create a `PM_fit` object.
+* Learn how to interact with the `PM_fit` object and execute it.
+* Interact with the `PM_result` object.
+
+# Installing Pmetrics
+Before getting into the topic, make sure you have the latest version of bot [R](https://cran.r-project.org/) and [Rstudio][https://posit.co/download/rstudio-desktop/].
+The most straightforward way to get pmetrics installed in your system is using the remotes library. This can be done via the R terminal integrated into R studio by typing `install.libraries("remotes")`.
+After having remotes installed, the installation of Pmetrics consists in typing `remotes::install_github("LAPKB/Pmetrics")` into the R terminal.
+
+Make sure you have Pmetrics Installed before continuing.
+
+
+# Gfortran
+The first step to get Pmetrics up and running is to get Gfortran installed in your system. The prefered way to accomplish this is to use Built-in Pmetrics function `PM_build()`: This function will detect your OS and will try to install gfortran on it . If you are using windows and this fails close/re-open Rstudio and try again, windows has some problems to detech environment variables once they change.
+If this option fails, here you have other options based on your OS:
+
+* Windows: Install [Chocolatey](https://chocolatey.org/install), and then install [mingw](https://community.chocolatey.org/packages/mingw) using this command: `choco install mingw`. Remember to restart Rstudio after doing this.
+* Linux: There are multiple ways to install gfotran on Linux, depending on the specific distribution you're using the name of the package might be different. In the case of Ubuntu and Ubuntu-like distributions gfotran is included in the build-essentials package `sudo apt install build-essentials`.
+* Mac: The easiest way to get gfotran installed on a MacOs computer is to use [Homebrew](https://brew.sh/) using this command: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` and following the instructions at the end of the script. Finally install gcc (gfotran is part of the gcc package): `brew install gcc`.
+
+After installing Gfotran run `PMbuild()`. You should be seeing a message like this one:
+
+```
+Compiling 1 of 9: NPprep...
+Compiling 2 of 9: NPeng...
+Compiling 3 of 9: ITprep...
+Compiling 4 of 9: ITeng...
+Compiling 5 of 9: ITerr...
+Compiling 6 of 9: SIMeng...
+Compiling 7 of 9: DOprep...
+Compiling 8 of 9: DOeng...
+Compiling 9 of 9: mb2csv...
+All packages installed and permanent Fortran modules compiled.
+```
+
+Make sure Pmetrics is installed and the fortran files are compiled before continue.
+
+# R and Pmetrics basics
+
+This is by no means an exhaustive R [tutorial](https://www.w3schools.com/r/), this section will only cover the basics needed to execute pmetrics and to go through the tutorial.
+
+R is a [interpreded](https://en.wikipedia.org/wiki/Scripting_language), dynamic-typed, object oriented programming language, it is mainly used by data scientist an researches all around the world to perform data-analysis, statistical-inference and even artificial intelligence, between other uses. 
+
+At any point, you can get help by typing
 ?function_name in the R console (the lower left window pane in RStudio).
 
 Try getting help for plot.PM_op().
@@ -62,12 +114,7 @@ should include it in every Pmetrics script of your own.
 library(Pmetrics)
 ```
 
-Let's get to some exercises!
-
-## Exercise 1 - NPAG Run
-
-### Introduction
-
+## Script structure and comments
 
 As you develop R scripts that have your analysis, it is useful to annotate with 
 comments so that you can remember what you did later! Comment lines in R begin
@@ -101,11 +148,11 @@ Don't worry about the details now. We'll cover all this in the tutorial.
 In your scripts, including in the above example, you will need to tell R which 
 directory your files are in. This is called the "working directory" in R.
 
-In this tutorial, you don't have to do this, but the command is:
+<!-- In this tutorial, you don't have to do this, but the command is:
 
 ```{r eval = F}
 setwd()
-```
+``` -->
 
 Include the full path or path relative to your current working directory
 in quotes between the parentheses. Windows users: Make sure that you
@@ -126,6 +173,23 @@ getwd() #the current working directory of this tutorial
 
 ```
 
+Let's get to some exercises!
+
+## Let's get some data! PM_tutorial()
+
+For this tutorial we will be following the `PM_tutorial` function, and using the data files it provides.
+
+The `PM_tutorial` function creates a folder named `Examples` inside your current working directory, because this is an example we are creating that file inside a temporary folder.
+Let's look at one of the example data files provided by the Pmetrics tutorial `ex.csv`
+```{r}
+setwd(wd)
+setwd("Examples/src")
+read.csv("ex.csv") |>
+head()
+```
+This is an example of the minimal Pmetrics' data format, further information can be found [here](https://lapkb.github.io/Pmetrics/articles/data.html). `PM_tutorial` contains multiple examples across the majority of Pmetrics' functionalities, we invite you to give it a look!
+
+
 ### Data objects
 
 Pmetrics always needs data and a model, so for our run let's first
@@ -133,7 +197,7 @@ create our data object.
 
 You can most easily create a new data object by reading a file that you
 made. You can read more details on [data file format](https://lapkb.github.io/Pmetrics/articles/data.html).
-Here we give you a file in the tutorial data/src folder. In
+Here we give you a file in the tutorial Examples/src folder. In
 your own project directories, you can look at this file directly by
 opening it in a spreadsheet program like Excel, or a text editor. To read the
 file into Pmetrics, use the code below.
@@ -142,7 +206,7 @@ file into Pmetrics, use the code below.
 exData <- PM_data$new("filename") #create a new PM_data object by reading a file
 ```
 
-Now, you try reading the ex.csv file from the data/src folder and call the result
+Now, you try reading the ex.csv file from the Examples/src folder and call the result
 exData.
 
 ```{r read_data, exercise = TRUE}
@@ -150,7 +214,7 @@ exData.
 ```
 
 ```{r read_data-solution}
-exData <- PM_data$new("data/src/ex.csv") 
+exData <- PM_data$new("Examples/src/ex.csv") 
 ```
 
 ```{r read_data-code-check}
@@ -223,9 +287,47 @@ exData$print(standard = T) #view the standardized data in the viewer
 exData$print(viewer = F) #view original data in console
 ```
 
-You can always learn more by typing `?PM_data` into your R console.
+You can always learn more by typing `?PM_data` into your R console or by looking at its [documentation](https://lapkb.github.io/Pmetrics/reference/PM_data.html#methods).
+
+Now, you try plotting exData
+
+```{r read_data, exercise = TRUE}
+
+```
+
+```{r read_data-solution}
+exData$plot()
+```
+
+```{r read_data-code-check}
+gradethis::grade_this_code() 
+```
 
 ### Model objects
+
+#### Classic method
+
+[`PM_model`](https://lapkb.github.io/Pmetrics/reference/PM_model.html) objects are used as a representation of one specific model we want to fit to the data. It also contains some methods attached to it, but in this tutorial we will mainly concentrate on the different ways to create them.
+
+The classic way of creating such objects is by having/[downloading](https://www.lapk.org/ModelLib.php)/writing a `model.txt`. In our case we will use one of the models provided by `PM_tutorial`. Such models are written using a specifig format, more details [here](https://lapkb.github.io/Pmetrics/articles/models.html).
+
+```{r}
+setwd(wd)
+setwd("Examples/src")
+library(readr)
+cat(read_file("model.txt"))
+```
+
+To create a `PM_data` object using the `.txt` representation, we just have to use the `PM_model$new()` function.
+
+```{r}
+setwd(wd)
+setwd("Examples/src")
+exModel<-PM_model$new("model.txt")
+
+```
+
+#### Model Library
 
 The easiest way to build models is to use the Pmetrics Model Builder
 App. It can't be displayed within this tutorial, but you can keep the
@@ -235,8 +337,6 @@ the app with sample data that is the same as what we created with
 `exData`. When you launch it, the first page you'll see is below.
 
 Navigate with the model components sidebar.
-
-#### Model Library
 
 ```{r echo = FALSE, out.width="75%", out.height="75%"}
 knitr::include_graphics("images/model_builder/front.png")
