@@ -545,7 +545,13 @@ mod1 <- PM_model$new(list(
     V = ab(30, 120),
     Tlag1 = ab(0, 4)
   ),
-  cov = list("WT", "AFRICA", "AGE", "GENDER", "HEIGHT"),
+  cov = list(
+    covariate("WT"),
+    covariate("AFRICA"),
+    covariate("AGE"),
+    covariate("GENDER"),
+    covariate("HEIGHT")
+  ),
   lag = list("Tlag(1) = Tlag1"),
   out = list(
     Y1 = list(
