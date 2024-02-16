@@ -210,10 +210,12 @@ Now, you try reading the ex.csv file from the Examples/src folder and call the r
 exData.
 
 ```{r read_data, exercise = TRUE}
+setwd(wd)
 
 ```
 
 ```{r read_data-solution}
+setwd(wd)
 exData <- PM_data$new("Examples/src/ex.csv") 
 ```
 
@@ -291,48 +293,29 @@ You can always learn more by typing `?PM_data` into your R console or by looking
 
 Now, you try plotting exData
 
-```{r read_data, exercise = TRUE}
+```{r plot_data, exercise = TRUE}
 
 ```
 
-```{r read_data-solution}
+```{r plot_data-solution}
 exData$plot()
 ```
 
-```{r read_data-code-check}
+```{r plot_data-code-check}
 gradethis::grade_this_code() 
 ```
 
 ### Model objects
 
-#### Classic method
-
-[`PM_model`](https://lapkb.github.io/Pmetrics/reference/PM_model.html) objects are used as a representation of one specific model we want to fit to the data. It also contains some methods attached to it, but in this tutorial we will mainly concentrate on the different ways to create them.
-
-The classic way of creating such objects is by having/[downloading](https://www.lapk.org/ModelLib.php)/writing a `model.txt`. In our case we will use one of the models provided by `PM_tutorial`. Such models are written using a specifig format, more details [here](https://lapkb.github.io/Pmetrics/articles/models.html).
-
-```{r}
-setwd(wd)
-setwd("Examples/src")
-library(readr)
-cat(read_file("model.txt"))
-```
-
-To create a `PM_data` object using the `.txt` representation, we just have to use the `PM_model$new()` function.
-
-```{r}
-setwd(wd)
-setwd("Examples/src")
-exModel<-PM_model$new("model.txt")
-
-```
-
 #### Model Library
 
+[`PM_model`](https://lapkb.github.io/Pmetrics/reference/PM_model.html) objects are used as a representation of one specific model we want to fit to the data. It also contains some methods attached to it, but in this tutorial we will mainly focus on the different ways to create them.
+
 The easiest way to build models is to use the Pmetrics Model Builder
-App. It can't be displayed within this tutorial, but you can keep the
+[App](https://lapkb.github.io/Pmetrics/reference/build_model.html). 
+It can't be displayed within this tutorial, but you can keep the
 tutorial open while you play with the app. To launch the app, type the
-following into your console: `build_model(NPex$data)`. This will start
+following into your console: `build_model(exData)`. This will start
 the app with sample data that is the same as what we created with
 `exData`. When you launch it, the first page you'll see is below.
 
@@ -391,7 +374,7 @@ later.
 knitr::include_graphics("images/model_builder/covariates.png")
 ```
 
-If you launch the Model Builder with a `PM_data` object as an argument,
+If you launch the Model Builder with a [`PM_data`](https://lapkb.github.io/Pmetrics/reference/PM_data.html) object as an argument,
 the covariate tab will be pre-populated with the covariates in the data
 file, as above. You can select any of them to make them piece-wise
 constant, i.e. the value is held constant between measurements. If left
@@ -550,10 +533,7 @@ about which model you are using, and allow you to take advantage of the `$update
 for `PM_model` objects which changes models on the fly in R.
 
 The alternative is to save the model list to a "model.txt" file in your current working directory. This file can be loaded in the future. To change the model, update the text file, save it, and load it into R
-with another `PM_model$new()` command.
-
-
-
+with another [`PM_model$new()`](https://lapkb.github.io/Pmetrics/reference/PM_model.html#method-PM_Vmodel-new) command.
 
 The following code creates equivalent models.
 
@@ -579,24 +559,45 @@ mod1 <- PM_model$new(list(
 ))
 ```
 
-look at it mod1
+#### Classic method
 
-in the working directory we have another file "model.txt" that contains
-the old representation of the same model we previously presented, let's
-take a look at it. system("cat model.txt")
+The classic way of creating such objects is by having/[downloading](https://www.lapk.org/ModelLib.php)/writing a `model.txt`. In our case we will use one of the models provided by `PM_tutorial`. Such models are written using a specifig format, more details [here](https://lapkb.github.io/Pmetrics/articles/models.html).
 
-PM_model$new() also accepts the path to a model file create the same model using this file mod1b <- PM_model$new("model.txt")
-mod1b
+```{r}
+setwd(wd)
+setwd("Examples/src")
+library(readr)
+cat(read_file("model.txt"))
+```
 
-PM_model provides a method to update the different elements of a model,
-for example: mod1b\$update(list( pri = list( Ka = ab(0.001, 5) ) ))
-mod1b
+To create a `PM_data` object using the `.txt` representation, we just have to use the `PM_model$new()` function.
 
-to copy a model use the $clone() method. mod1b <- mod1$clone()
+```{r, context="server"}
+setwd(wd)
+setwd("Examples/src")
+exModel<-PM_model$new("model.txt")
+exModel
+```
 
-simply using mod1b \<- mod1 will cause mod1b to be changed if mod1 is
-changed, as R6 objects use reference semantics. For more details you can
-refer to <https://adv-r.hadley.nz/r6.html>, Section 14.4.
+PM_model provides a method to [update](https://lapkb.github.io/Pmetrics/reference/PM_model.html#method-PM_Vmodel-update) the different elements of a model,
+for example: 
+
+```{r}
+mod2 <- modEx$clone() #create an independent copy of modEx called mod2
+mod2$update(list(
+  pri = list(
+   Ke = ab(0, 1), #change the range
+   V = NULL, #this deletes the variable
+   V0 = ab(10, 100) #add a new variable
+  ),
+  sec = "V = V0 * WT" #add a new secondary equation
+))
+#note that they are different now
+mod2
+modEx
+```
+
+Keep in mind that if you want to create a copy a model, you must use the $clone() method. mod1b <- mod1$clone(). Simply using mod1b \<- mod1 will cause mod1b to be changed if mod1 is changed, as R6 objects use reference semantics. For more details you can refer to <https://adv-r.hadley.nz/r6.html>, Section 14.4.
 
 ### Fit objects
 
