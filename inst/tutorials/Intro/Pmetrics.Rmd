@@ -558,11 +558,12 @@ mod1 <- PM_model$new(list(
       value = "X(2)/V",
       err = list(
         model = proportional(5),
-        assay = c(0.02, 0.05, -0.0002, 0)
+        assay = errorPoly(c(0.02, 0.05, -0.0002, 0))
       )
     )
   )
 ))
+mod1
 ```
 
 #### Classic method
