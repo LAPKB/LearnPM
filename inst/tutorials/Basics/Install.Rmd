@@ -1,0 +1,52 @@
+---
+title: "Installing Pmetrics"
+tutorial:
+    id: "install-pmetrics"
+output: 
+  learnr::tutorial:
+    css: css/style.css
+    progressive: true
+    allow_skip: true
+    theme: flatly
+    ace_theme: tomorrow_night_blue
+runtime: shiny_prerendered
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+# Installing Pmetrics
+Before anything else make sure you have the latest version of both [R](https://cran.r-project.org/) and [Rstudio][https://posit.co/download/rstudio-desktop/].
+The most straightforward way to get pmetrics installed in your system is using the remotes library. This can be done via the R terminal integrated into R studio by typing `install.libraries("remotes")`.
+After having remotes installed, the installation of Pmetrics consists in typing `remotes::install_github("LAPKB/Pmetrics")` into the R terminal.
+
+Make sure you have Pmetrics Installed before continuing.
+
+
+# Gfortran
+The first step to get Pmetrics up and running is to get Gfortran installed in your system. The prefered way to accomplish this is to use Built-in Pmetrics function `PM_build()`: This function will detect your OS and will try to install gfortran on it . If you are using windows and this fails close/re-open Rstudio and try again, windows has some problems to detech environment variables once they change.
+If this option fails, here you have other options based on your OS:
+
+* Windows: Install [Chocolatey](https://chocolatey.org/install), and then install [mingw](https://community.chocolatey.org/packages/mingw) using this command: `choco install mingw`. Remember to restart Rstudio after doing this.
+* Linux: There are multiple ways to install gfotran on Linux, depending on the specific distribution you're using the name of the package might be different. In the case of Ubuntu and Ubuntu-like distributions gfotran is included in the build-essentials package `sudo apt install build-essentials`.
+* Mac: The easiest way to get gfotran installed on a MacOs computer is to use [Homebrew](https://brew.sh/) using this command: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` and following the instructions at the end of the script. Finally install gcc (gfotran is part of the gcc package): `brew install gcc`.
+
+After installing Gfotran run `PMbuild()`. You should be seeing a message like this one:
+
+```
+Compiling 1 of 9: NPprep...
+Compiling 2 of 9: NPeng...
+Compiling 3 of 9: ITprep...
+Compiling 4 of 9: ITeng...
+Compiling 5 of 9: ITerr...
+Compiling 6 of 9: SIMeng...
+Compiling 7 of 9: DOprep...
+Compiling 8 of 9: DOeng...
+Compiling 9 of 9: mb2csv...
+All packages installed and permanent Fortran modules compiled.
+```
+
+Make sure Pmetrics is installed and the fortran files are compiled before continue.
+```{r, context="server"}
+
+```
