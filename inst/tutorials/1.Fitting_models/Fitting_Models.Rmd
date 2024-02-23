@@ -1,5 +1,5 @@
 ---
-title: "My first model using Pmetrics"
+title: "Fitting models using Pmetrics"
 tutorial:
     id: "fit-models"
 output: 
@@ -27,6 +27,7 @@ setwd(wd)
 src_wd = paste0(wd,"/Examples/src")
 run_wd = paste0(wd,"/Examples/Runs")
 dir.create(run_wd)
+#instead of calling PM_tutorial, we could use exData$write and mod1$write
 PM_tutorial(auto_confirm=TRUE)
 exData <- PM_data$new("Examples/src/ex.csv")
 mod1 <- PM_model$new("Examples/src/model.txt")
@@ -580,7 +581,7 @@ Keep in mind that if you want to create a copy a model, you must use the $clone(
 
 ### Fit objects
 
-Now we define a new fit to be run as the combination of a dataset and a
+Now we define a new fit [object](https://lapkb.github.io/Pmetrics/reference/PM_fit.html) to be run as the combination of a dataset and a
 suitable model. 
 ```{r}
 exFit <- PM_fit$new(model = mod1, data = exData)
@@ -598,114 +599,34 @@ setwd(run_wd)
 exFit$run(intern = T) #execute the run with the default arguments
 ```
 
-A terminal window will open and run; don't worry about pauses; the
-program has not crashed"
+The execution will be performed in the background (at least for this exercise), 
+you will get some information indicating that the report has been generated when the fitting process is done.
 
 After the run is complete you need get the extracted information back
 into R. They will be sequentially numbered as /1, /2, /3,... in your
 working directory.
 
 One benefit of having this fit object is that it is possible to run
-multiple fittings without needing to move datafiles around getwd()
-list.files()
+multiple fittings without needing to move datafiles around getwd().
 
-Result Object exRes \<- PM_load(1)
+```{r list_run_1, exercise = TRUE}
+setwd(run_wd)
+list.files()
+```
+
+
+#### Result Object 
+
+To load the results into a [`PM_result`](https://lapkb.github.io/Pmetrics/reference/PM_result.html) object.
+This object is a R representation of the results stored in your run folder.
 
 Create a PM_result object by reading a run folder. The "1" in the
 parentheses tells Pmetrics to look in the /1 folder.
 
-Plot the raw data using R6 with various options. Type ?plot.PM_data in
-the R console for help. exRes$data$plot() exRes$data$plot(overlay = F,
-xlim = c(119, 145)) exRes$data$plot(overlay = F, line = list(join = F,
-pred =
-exRes$pop)) exRes$data$plot(line = list(join = F, pred = exRes$post),
-marker = list(color = "blue", symbol = 2))
+```{r load_run_1, exercise = TRUE}
+setwd(run_wd)
+exRes <- PM_load(1)
+```
 
-The following are the older S3 method with plot(...) for the first two
-examples You can use R6 or S3 for any Pmetrics object We will focus on
-R6 as the more modern way. plot(exRes$data) plot(exRes$data, xlim =
-c(119, 146), marker = list(color = "blue"))
+We will go into detail about the Result object in the next tutorial.
 
-here's a summary of the original data file; ?summary.PM_data for help
-exRes$data$summary()
-
-Plot some observed vs. predicted data. Type ?plot.PM_op in the R console
-for help. exRes$op$plot() exRes$op$plot(pred.type = "pop")
-exRes$op$plot(line = list(lm = list(ci = .9, color = "red"), loess = F))
-
-The OP plot can be disaggregated into a Tidy compatible format using the
-$data field (see https://www.tidyverse.org/) library(tidyverse) exRes$op$data %>% plot() exRes$op\$data
-%\>% filter(pred \> 5) %\>% filter(pred \< 10) %\>% plot()
-
-the original op object data can be accessed via exRes$op$data
-
-see a header with the first 10 rows of the op object head(exRes$op$data,
-10)
-
-get a summary with bias and imprecision of the population predictions;
-?summary.PMop for help exRes$op$summary(pred.type = "pop")
-
-the S3 way summary(exRes\$op, pred.type = "pop")
-
-look at the summary for the posterior predictions (default pred.type)
-based on means of parameter values exRes$op$summary(icen = "mean")
-
-Plot final population joint density information. Type ?plot.PMfinal in
-the R console for help. exRes$final$plot()
-
-add a kernel density curve exRes$final$plot(density = T)
-
-A bivariate plot. Plotting formulae in R are of the form 'y\~x'
-exRes$final$plot(Ke \~ V, marker = list(color = "red", symbol =
-"diamond"), line = list(color = "purple", dash = "dash", width = 2) )
-
-or the S3 way plot(exRes\$final)
-
-The original final object can be accessed using exRes$final$data
-names(exRes$final$data)
-
-see the population points exRes$final$popPoints
-
-or exRes$final$data\$popPoints
-
-see the population mean parameter values exRes$final$popMean
-
-see a summary with confidence intervals around the medians and the
-Median Absolute Weighted Difference (MAWD); ?summary.PMfinal for help
-exRes$final$summary()
-
-Plot cycle information Type ?plot.PMcycle in the R console for help.
-exRes$cycle$plot()
-
-names of the cycle object; ?makeCycle for help names(exRes$cycle$data)
-
-gamma/lamda value on last 6 cycles tail(exRes$cycle$data\$gamlam)
-
-Plot covariate information. Type ?plot.PMcov in the R console for help.
-Recall that plotting formulae in R are of the form 'y\~x'
-exRes$cov$plot(V \~ wt) exRes$cov$data %\>% plot(V \~ wt) exRes$cov$data
-%\>% filter(age \> 25) %\>% plot(V \~ wt)
-
-exRes$cov$plot(Ke \~ age, lowess = F, reg = T, pch = 3)
-
-Same plot but with mean Bayesian posterior parameter and covariate
-values... Remember the 'icen' argument? exRes$cov$plot(V \~ wt, icen =
-"mean")
-
-When time is the x variable, the y variable is aggregated by subject. In
-R plot formulae, calculations on the fly can be included using the I()
-function exRes$cov$plot(I(V \* wt) \~ time)
-
-The previous cov object can be seen via: exRes\$cov
-
-but to access individual elements, use: exRes$cov$data[, 1:3] for
-example names(exRes\$cov)
-
-summarize with mean covariates; ?summary.PM_cov for help
-exRes$cov$summary(icen = "mean")
-
-Look at all possible covariate-parameter relationships by multiple
-linear regression with forward and backward elimination - type ?PMstep
-in the R console for help.
-exRes$step() icen works here too.... exRes$step(icen = "median") forward
-elimination only exRes\$step(direction = "forward")
