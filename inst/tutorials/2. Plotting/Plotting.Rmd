@@ -1,7 +1,7 @@
 ---
-title: "Results and Plotting"
+title: "Plotting"
 tutorial:
-    id: "results-plotting"
+    id: "plotting"
 output: 
   learnr::tutorial:
     css: css/style.css
@@ -30,6 +30,24 @@ exFit <- PM_fit$new(model = mod1, data = exData)
 exRes <- NPex
 ```
 
+# Introduction
+
+This tutorial will focus on exploring the plotting methods exported by the diferent R6 objects we have seen this far: [`PM_model`](https://lapkb.github.io/Pmetrics/reference/PM_model.html), [`PM_data`](https://lapkb.github.io/Pmetrics/reference/PM_data.html) and [`PM_result`](https://lapkb.github.io/Pmetrics/reference/PM_result.html). Each method seen here will link to their specific documentation page, there you can look at the different parameters that can be passed to the function to personalize the plots.
+
+## Plotting PM_model
+
+As seen in the model builder app, `PM_model` objects can be [plotted](https://lapkb.github.io/Pmetrics/reference/plot.PM_model.html).
+
+```{r summary_model, exercise = TRUE}
+modEx
+```
+```{r plot_model, exercise = TRUE}
+modEx$plot()
+```
+In this case, the model is analytic (This means that the user has not specified a set )
+
+
+======ALL BELOW THIS LINE IS WORK IN PROGRESS======
 
 Plot the raw data using R6 with various options. Type `?plot.PM_data` in
 the R console for help. 

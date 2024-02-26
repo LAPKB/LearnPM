@@ -16,7 +16,7 @@ editor_options:
 ---
 
 # Installing Pmetrics
-Before anything else make sure you have the latest version of both [R](https://cran.r-project.org/) and [Rstudio][https://posit.co/download/rstudio-desktop/].
+Before anything else make sure you have the latest version of both [R](https://cran.r-project.org/) and [Rstudio](https://posit.co/download/rstudio-desktop/).
 The most straightforward way to get pmetrics installed in your system is using the remotes library. This can be done via the R terminal integrated into R studio by typing `install.libraries("remotes")`.
 After having remotes installed, the installation of Pmetrics consists in typing `remotes::install_github("LAPKB/Pmetrics")` into the R terminal.
 
