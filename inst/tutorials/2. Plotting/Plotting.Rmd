@@ -1,8 +1,8 @@
 ---
 title: "Plotting"
 tutorial:
-    id: "plotting"
-output: 
+  id: "plotting"
+output:
   learnr::tutorial:
     css: css/style.css
     progressive: true
@@ -10,10 +10,11 @@ output:
     theme: flatly
     ace_theme: tomorrow_night_blue
 runtime: shiny_prerendered
-editor_options: 
-  markdown: 
+editor_options:
+  markdown:
     wrap: 72
 ---
+
 ```{r setup, include=FALSE, context="server"}
 library(learnr)
 library(Pmetrics)
@@ -34,6 +35,19 @@ exRes <- NPex
 
 This tutorial will focus on exploring the plotting methods exported by the diferent R6 objects we have seen this far: [`PM_model`](https://lapkb.github.io/Pmetrics/reference/PM_model.html), [`PM_data`](https://lapkb.github.io/Pmetrics/reference/PM_data.html) and [`PM_result`](https://lapkb.github.io/Pmetrics/reference/PM_result.html). Each method seen here will link to their specific documentation page, there you can look at the different parameters that can be passed to the function to personalize the plots.
 
+# Regarding PM_result objects
+
+Through the following sections of this tutorial we will be using `PM_model`, `PM_data` and `PM_result` objects. It is key to notice that the model an data objects can be also accessed through the result object like this:
+
+```{r echo = T, eval = F}
+#This
+exData$plot()
+#Is equivalent to this
+exRes$data$plot()
+```
+
+Also notice that altough they are equal objects, they are not the same object (modifications on one of the objects will not be reflected on the other one)
+
 ## Plotting PM_model
 
 As seen in the [model builder app](https://lapkb.github.io/Pmetrics/reference/build_model.html), `PM_model` objects can be [plotted](https://lapkb.github.io/Pmetrics/reference/plot.PM_model.html).
@@ -41,35 +55,93 @@ As seen in the [model builder app](https://lapkb.github.io/Pmetrics/reference/bu
 ```{r summary_model, exercise = TRUE}
 modEx
 ```
+
 ```{r plot_model, exercise = TRUE}
 modEx$plot()
 ```
+
 In this case, the model is analytic so Pmetrics will infer its compartmental structure based on the names of the primary parameters.
 
+## Plotting PM_data
 
+Plot the raw data using R6 with various options. Type `?plot.PM_data` in the R console for [help](https://lapkb.github.io/Pmetrics/reference/plot.PM_data.html).
 
+```{r plot_1, exercise = TRUE}
+exRes$data$plot()
+```
 
+Now, you try plotting the same PM_data object but only between hours 120-145. Remember checking the [documentation](https://lapkb.github.io/Pmetrics/reference/plot.PM_data.html)
+
+```{r exerc_plot_1, exercise = TRUE}
+
+```
+
+```{r exerc_plot_1-solution}
+exRes$data$plot(xlim = c(119, 145))
+```
+
+<!-- ```{r exerc_plot_1-code-check}
+gradethis::grade_this_code()
+``` -->
+
+A very useful diagnostic plot is to compare the individual observations of each subject with their correspondent posterior profiles. Look at the [documentation](https://lapkb.github.io/Pmetrics/reference/plot.PM_data.html).
+
+```{r plot.PM_data_question}
+question("Which specific arguments do you think might be useful to generate the plot described above?",
+          answer("include"),
+          answer("line", correct = TRUE),
+          answer("marker"),
+          answer("names"),
+          answer("log"),
+          answer("overlay", correct = TRUE),
+          allow_retry = TRUE
+)
+```
+
+How would you generate that plot?
+
+```{r data_pred_plot, exercise = TRUE}
+
+```
+
+```{r data_pred_plot-solution}
+exRes$data$plot(overlay=F,line=list(pred=exRes$post))
+```
+
+<!-- ```{r data_pred_plot-code-check}
+gradethis::grade_this_code()
+``` -->
+
+In this case, as we want individual plots for each subject `overlay` must be set to False and because we want to plot the posterior predictions we pass the `exRes$post` object to the `Line` argument.
+
+Now, how would you plot all observations in a single plot with the population predictions?
+
+How would you generate that plot?
+
+```{r data_pred_pop_plot, exercise = TRUE}
+
+```
+
+```{r data_pred_pop_plot-solution}
+exRes$data$plot(line=list(pred=exRes$pop))
+```
+
+<!-- exRes$data$plot(line = list(join = F, pred = exRes$post),marker = list(color = "blue", symbol = 2)) -->
+<!-- ```{r data_pred_pop_plot-code-check}
+gradethis::grade_this_code()
+``` -->
+
+## Observed vs Predicted Plots
 
 ======ALL BELOW THIS LINE IS WORK IN PROGRESS======
 
-Plot the raw data using R6 with various options. Type `?plot.PM_data` in
-the R console for help. 
-```{r plot_1, exercise = TRUE}
-exRes$data$plot()
-exRes$data$plot(overlay = F,xlim = c(119, 145))
-exRes$data$plot(overlay = F, line = list(join = F,pred = exRes$pop))
-exRes$data$plot(line = list(join = F, pred = exRes$post),marker = list(color = "blue", symbol = 2))
-```
-
-   
-
-The following are the older S3 method with plot(...) for the first two
+<!-- The following are the older S3 method with plot(...) for the first two
 examples You can use R6 or S3 for any Pmetrics object We will focus on
 R6 as the more modern way. plot(exRes$data) plot(exRes$data, xlim =
 c(119, 146), marker = list(color = "blue"))
 
 here's a summary of the original data file; ?summary.PM_data for help
-exRes$data$summary()
+exRes$data$summary() -->
 
 Plot some observed vs. predicted data. Type ?plot.PM_op in the R console
 for help. exRes$op$plot() exRes$op$plot(pred.type = "pop")
@@ -81,8 +153,7 @@ $data field (see https://www.tidyverse.org/) library(tidyverse) exRes$op$data %>
 
 the original op object data can be accessed via exRes$op$data
 
-see a header with the first 10 rows of the op object head(exRes$op$data,
-10)
+see a header with the first 10 rows of the op object head(exRes$op$data, 10)
 
 get a summary with bias and imprecision of the population predictions;
 ?summary.PMop for help exRes$op$summary(pred.type = "pop")
