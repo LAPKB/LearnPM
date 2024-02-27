@@ -1,8 +1,8 @@
 ---
 title: "Fitting models using Pmetrics"
 tutorial:
-    id: "fit-models"
-output: 
+  id: "fit-models"
+output:
   learnr::tutorial:
     css: css/style.css
     progressive: true
@@ -10,8 +10,8 @@ output:
     theme: flatly
     ace_theme: tomorrow_night_blue
 runtime: shiny_prerendered
-editor_options: 
-  markdown: 
+editor_options:
+  markdown:
     wrap: 72
 ---
 
@@ -22,34 +22,37 @@ library(tidyverse)
 library(gradethis)
 gradethis::gradethis_setup()
 knitr::opts_chunk$set(echo = TRUE)
-wd<-tempdir()
-setwd(wd)
-src_wd = paste0(wd,"/Examples/src")
-run_wd = paste0(wd,"/Examples/Runs")
-dir.create(run_wd)
-#instead of calling PM_tutorial, we could use exData$write and mod1$write
-PM_tutorial(auto_confirm=TRUE)
-exData <- PM_data$new("Examples/src/ex.csv")
-mod1 <- PM_model$new("Examples/src/model.txt")
-exFit <- PM_fit$new(model = mod1, data = exData)
+#wd<-tempdir()
+
+#run_wd = paste0(wd,"/Runs")
+#dir.create(run_wd)
+
+exData <- dataEx
+mod1 <- modEx
+exFit <- PM_fit$new(model = modEx, data = dataEx)
+
+#exData$write("data.csv")
+#file_content <- readLines("data.csv")
+#file_content <- file_content[-1]
+#writeLines(file_content, "data.csv")
+#mod1$write("model.txt")
 ```
 
-# Welcome
+# About this tutorial
+
 Welcome to the Pmetrics model fitting tutorial. This tutorial will briefly introduce you to the R programming language and the Pmetrics modeling framework.
 The man topics of this tutorial are:
 
-* Create and maipulate `PM_data` and `PM_model` objects.
-* Use those objects to create a `PM_fit` object.
-* Learn how to interact with the `PM_fit` object and execute it.
-* Interact with the `PM_result` object.
+- Create and maipulate `PM_data` and `PM_model` objects.
+- Use those objects to create a `PM_fit` object.
+- Learn how to interact with the `PM_fit` object and execute it.
+- Interact with the `PM_result` object.
 
-
-
-# R and Pmetrics basics
+## R and Pmetrics basics
 
 This is by no means an exhaustive R [tutorial](https://www.w3schools.com/r/), this section will only cover the basics needed to execute pmetrics and to go through the tutorial.
 
-R is a [interpreded](https://en.wikipedia.org/wiki/Scripting_language), dynamic-typed, object oriented programming language, it is mainly used by data scientist an researches all around the world to perform data-analysis, statistical-inference and even artificial intelligence, between other uses. 
+R is a [interpreded](https://en.wikipedia.org/wiki/Scripting_language), dynamic-typed, object oriented programming language, it is mainly used by data scientist an researches all around the world to perform data-analysis, statistical-inference and even artificial intelligence, between other uses.
 
 At any point, you can get help by typing
 ?function_name in the R console (the lower left window pane in RStudio).
@@ -65,7 +68,7 @@ Try getting help for plot.PM_op().
 <!-- help. -->
 <!-- ::: -->
 
-``` {r function_help-hint}
+```{r function_help-hint}
 You don't need to include the parentheses when asking for help.
 ```
 
@@ -89,7 +92,7 @@ library(Pmetrics)
 
 ## Script structure and comments
 
-As you develop R scripts that have your analysis, it is useful to annotate with 
+As you develop R scripts that have your analysis, it is useful to annotate with
 comments so that you can remember what you did later! Comment lines in R begin
 with "#". A script might look like this.
 
@@ -118,7 +121,7 @@ run1 <- PM_load(1)
 ```
 
 Don't worry about the details now. We'll cover all this in the tutorial.
-In your scripts, including in the above example, you will need to tell R which 
+In your scripts, including in the above example, you will need to tell R which
 directory your files are in. This is called the "working directory" in R.
 
 <!-- In this tutorial, you don't have to do this, but the command is:
@@ -135,8 +138,8 @@ separate directories with a forward slash "/" or double backslashes
 
 Examples:
 
--   "\~/LAPKB/Pmetrics/Examples" for Mac/Linux users
--   "C:/LAPKB/Pmetrics/Examples" for Windows users
+- "\~/LAPKB/Pmetrics/Examples" for Mac/Linux users
+- "C:/LAPKB/Pmetrics/Examples" for Windows users
 
 If that sets the working directory, how do you get the current working directory?
 
@@ -146,24 +149,11 @@ getwd() #the current working directory of this tutorial
 
 ```
 
-Let's get to some exercises!
+## Data object
 
-## PM_tutorial()
+```{r, echo = FALSE, results = 'hide'}
 
-For this tutorial we will be following the `PM_tutorial` function, and using the data files it provides.
-
-The `PM_tutorial` function creates a folder named `Examples` inside your current working directory, because this is an example we are creating that file inside a temporary folder.
-Let's look at one of the example data files provided by the Pmetrics tutorial `ex.csv`
-```{r}
-setwd(wd)
-setwd("Examples/src")
-read.csv("ex.csv") |>
-head()
 ```
-This is an example of the minimal Pmetrics' data format, further information can be found [here](https://lapkb.github.io/Pmetrics/articles/data.html). `PM_tutorial` contains multiple examples across the majority of Pmetrics' functionalities, we invite you to give it a look!
-
-
-### Data objects
 
 Pmetrics always needs data and a model, so for our run let's first
 create our data object.
@@ -179,27 +169,33 @@ file into Pmetrics, use the code below.
 exData <- PM_data$new("filename") #create a new PM_data object by reading a file
 ```
 
-Now, you try reading the ex.csv file from the Examples/src folder and call the result
+we have prepared a file named `data.csv` in the data folder to serve as an example, let's take a look at it:
+
+```{r read_raw_data, exercise = TRUE}
+read.csv("data/data.csv")
+```
+
+Further information about the Pmetrics data format can be found [here](https://lapkb.github.io/Pmetrics/articles/data.html).
+
+Now, you try reading the `data.csv` file from the data folder and call the result
 exData.
 
 ```{r read_data, exercise = TRUE}
-setwd(wd)
 
 ```
 
 ```{r read_data-solution}
-setwd(wd)
-exData <- PM_data$new("Examples/src/ex.csv") 
+exData <- PM_data$new("data/data.csv")
 ```
 
 <!-- ```{r read_data-code-check}
-gradethis::grade_this_code() 
+gradethis::grade_this_code()
 ``` -->
 
 When you create a `PM_data` object, you see a report of any
 standardizations or fixes Pmetrics attempted. In this case (of course),
 everything passed. `exData` is an R6 object, which means that it
-contains both *fields* containing data and *methods* to process that
+contains both _fields_ containing data and _methods_ to process that
 data. In R6, fields and methods are accessed with the `$`.
 
 To look at the structure of an object:
@@ -275,17 +271,17 @@ exData$plot()
 ```
 
 <!-- ```{r plot_data-code-check}
-gradethis::grade_this_code() 
+gradethis::grade_this_code()
 ``` -->
 
-### Model objects
+## Model object
 
-#### Model Library
+### Model Library
 
 [`PM_model`](https://lapkb.github.io/Pmetrics/reference/PM_model.html) objects are used as a representation of one specific model we want to fit to the data. It also contains some methods attached to it, but in this tutorial we will mainly focus on the different ways to create them.
 
 The easiest way to build models is to use the Pmetrics Model Builder
-[App](https://lapkb.github.io/Pmetrics/reference/build_model.html). 
+[App](https://lapkb.github.io/Pmetrics/reference/build_model.html).
 It can't be displayed within this tutorial, but you can keep the
 tutorial open while you play with the app. To launch the app, type the
 following into your console: `build_model(exData)`. This will start
@@ -390,7 +386,7 @@ conditions. Here are two examples of conditional secondary variables
 chosen on the basis of sex. The primary variables are Vm, Vf, CLm, and
 CLf.
 
-```         
+```
 V = Vm
 &IF(sex == 1) V = Vf
 
@@ -442,10 +438,10 @@ knitr::include_graphics("images/model_builder/eqn.png")
 
 Here you specify the equations that define the structural model, i.e., the
 mathematical expressions that relate input (dose) to output (measurements).
-Use `dX[i]` for change in compartment amounts, where i is the compartment number, 
+Use `dX[i]` for change in compartment amounts, where i is the compartment number,
 e.g. dX[1] or dX[2]. Compartment amounts are referred to as `X[i]`, e.g. X[1] or X[2].
 Use `BOLUS[j]` for bolus input j and `RATEIV[k]` for infusion k.
-j and k correspond to the INPUT column in the data file, which is usually omitted and assumed to be 1 for all doses. The *DUR* column in the data file determines whether a dose is treated as a BOLUS (DUR = 0) or RATEIV (DUR > 0). Any variable defined in PRI, COV, or SEC may be used in your equations.
+j and k correspond to the INPUT column in the data file, which is usually omitted and assumed to be 1 for all doses. The _DUR_ column in the data file determines whether a dose is treated as a BOLUS (DUR = 0) or RATEIV (DUR > 0). Any variable defined in PRI, COV, or SEC may be used in your equations.
 
 ```{r quiz_eqn, echo = FALSE}
 
@@ -464,8 +460,7 @@ random_answer_order = TRUE
 
 **Make your EQN component match the image in the tutorial.**
 
-
-### OUTputs
+#### OUTputs
 
 ```{r echo = FALSE, out.width="75%", out.height="75%"}
 knitr::include_graphics("images/model_builder/output.png")
@@ -481,8 +476,8 @@ equation is needed.
 Every output equation must have an associated set of error polynomial coefficients
 to describe the assay noise associated with measuring that ouput. See the article
 on [models](https://lapkb.github.io/Pmetrics/articles/models.html) for more details.
-The default behavior  is to use the coefficients
-in the data file if they exist, and only if absent use these coefficients here. 
+The default behavior is to use the coefficients
+in the data file if they exist, and only if absent use these coefficients here.
 The "Use always?" option overrides this default to use these coefficients regardless
 of what is in the data file.
 
@@ -491,8 +486,7 @@ with a starting value for the optimization. Alternatively, you can fix the noise
 
 **Make your OUT component match the image in the tutorial.**
 
-
-#### Model List
+### Model List
 
 ```{r echo = FALSE, out.width="75%", out.height="75%"}
 knitr::include_graphics("images/model_builder/output2.png")
@@ -539,28 +533,24 @@ mod1 <- PM_model$new(list(
 mod1
 ```
 
-#### Classic method
+### Classic method
 
 The classic way of creating such objects is by having/[downloading](https://www.lapk.org/ModelLib.php)/writing a `model.txt`. In our case we will use one of the models provided by `PM_tutorial`. Such models are written using a specifig format, more details [here](https://lapkb.github.io/Pmetrics/articles/models.html).
 
 ```{r}
-setwd(wd)
-setwd("Examples/src") 
 library(readr)
-cat(read_file("model.txt"))
+cat(read_file("data/model.txt"))
 ```
 
 To create a `PM_data` object using the `.txt` representation, we just have to use the `PM_model$new()` function.
 
 ```{r, context="server"}
-setwd(wd)
-setwd("Examples/src")
-exModel<-PM_model$new("model.txt")
+exModel<-PM_model$new("data/model.txt")
 exModel
 ```
 
 PM_model provides a method to [update](https://lapkb.github.io/Pmetrics/reference/PM_model.html#method-PM_Vmodel-update) the different elements of a model,
-for example: 
+for example:
 
 ```{r}
 mod2 <- modEx$clone() #create an independent copy of modEx called mod2
@@ -579,10 +569,11 @@ modEx
 
 Keep in mind that if you want to create a copy a model, you must use the $clone() method. mod1b <- mod1$clone(). Simply using mod1b \<- mod1 will cause mod1b to be changed if mod1 is changed, as R6 objects use reference semantics. For more details you can refer to <https://adv-r.hadley.nz/r6.html>, Section 14.4.
 
-### Fit objects
+## Fit object
 
 Now we define a new fit [object](https://lapkb.github.io/Pmetrics/reference/PM_fit.html) to be run as the combination of a dataset and a
-suitable model. 
+suitable model.
+
 ```{r}
 exFit <- PM_fit$new(model = mod1, data = exData)
 
@@ -593,13 +584,12 @@ exFit$check()
 
 To keep everything tidy, let's move to another folder specific to store
 the runs notice that we are not moving any file to this folder.
-For your convinience we've defined a variable named `run_wd` that is a shortcut to `wd/Examples/Runs`.
+
 ```{r fit_run_1, exercise = TRUE}
-setwd(run_wd)
 exFit$run(intern = T) #execute the run with the default arguments
 ```
 
-The execution will be performed in the background (at least for this exercise), 
+The execution will be performed in the background (at least for this exercise),
 you will get some information indicating that the report has been generated when the fitting process is done.
 
 After the run is complete you need get the extracted information back
@@ -610,12 +600,10 @@ One benefit of having this fit object is that it is possible to run
 multiple fittings without needing to move datafiles around getwd().
 
 ```{r list_run_1, exercise = TRUE}
-setwd(run_wd)
 list.files()
 ```
 
-
-#### Result Object 
+## Result Object
 
 To load the results into a [`PM_result`](https://lapkb.github.io/Pmetrics/reference/PM_result.html) object.
 This object is a R representation of the results stored in your run folder.
@@ -624,9 +612,7 @@ Create a PM_result object by reading a run folder. The "1" in the
 parentheses tells Pmetrics to look in the /1 folder.
 
 ```{r load_run_1, exercise = TRUE}
-setwd(run_wd)
 exRes <- PM_load(1)
 ```
 
 We will go into detail about the Result object in the next tutorial.
-

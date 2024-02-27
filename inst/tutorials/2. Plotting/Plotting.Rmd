@@ -36,7 +36,7 @@ This tutorial will focus on exploring the plotting methods exported by the difer
 
 ## Plotting PM_model
 
-As seen in the model builder app, `PM_model` objects can be [plotted](https://lapkb.github.io/Pmetrics/reference/plot.PM_model.html).
+As seen in the [model builder app](https://lapkb.github.io/Pmetrics/reference/build_model.html), `PM_model` objects can be [plotted](https://lapkb.github.io/Pmetrics/reference/plot.PM_model.html).
 
 ```{r summary_model, exercise = TRUE}
 modEx
@@ -44,7 +44,10 @@ modEx
 ```{r plot_model, exercise = TRUE}
 modEx$plot()
 ```
-In this case, the model is analytic (This means that the user has not specified a set )
+In this case, the model is analytic so Pmetrics will infer its compartmental structure based on the names of the primary parameters.
+
+
+
 
 
 ======ALL BELOW THIS LINE IS WORK IN PROGRESS======
