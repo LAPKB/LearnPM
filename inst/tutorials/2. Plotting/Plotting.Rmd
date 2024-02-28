@@ -25,9 +25,9 @@ knitr::opts_chunk$set(echo = TRUE)
 wd<-tempdir()
 setwd(wd)
 
-exData <- PM_data$new("Examples/src/ex.csv")
-mod1 <- PM_model$new("Examples/src/model.txt")
-exFit <- PM_fit$new(model = mod1, data = exData)
+exData <- dataEx
+mod1 <- modEx
+exFit <- PM_fit$new(model = modEx, data = dataEx)
 exRes <- NPex
 ```
 
@@ -86,7 +86,7 @@ gradethis::grade_this_code()
 
 A very useful diagnostic plot is to compare the individual observations of each subject with their correspondent posterior profiles. Look at the [documentation](https://lapkb.github.io/Pmetrics/reference/plot.PM_data.html).
 
-```{r plot.PM_data_question}
+```{r plot_PM_data_question}
 question("Which specific arguments do you think might be useful to generate the plot described above?",
           answer("include"),
           answer("line", correct = TRUE),
@@ -131,94 +131,184 @@ exRes$data$plot(line=list(pred=exRes$pop))
 gradethis::grade_this_code()
 ``` -->
 
-## Observed vs Predicted Plots
+## Observed vs Predicted
+
+[PM_op](https://lapkb.github.io/Pmetrics/reference/PM_op.html) objects can be accessed vía the `$op` attribute of [PM_result](https://lapkb.github.io/Pmetrics/reference/PM_result.html) objects.
+
+This object exposes some methods, but for the moment we will focus on the `$plot()` one.
+Type `?plot.PM_op` in the R console for help.
+
+```{r}
+exRes$op$plot()
+exRes$op$plot(pred.type = "pop")
+exRes$op$plot(line = list(lm = list(ci = .9, color = "red"), loess = F))
+```
+
+The PM_op object can be disaggregated into a Tidy compatible format using the `$data` field, see [tidyverse](https://www.tidyverse.org/).
+
+```{r}
+library(tidyverse)
+exRes$op$data %>%
+plot()
+exRes$op$data %>%
+filter(pred > 5) %>%
+filter(pred < 10) %>%
+plot()
+```
+
+The original op object data can always be accessed via `exRes$op$data`
+
+Try using the `head()` function and the pipe operator `%>%` to print the first 10 rows of the op object.
+
+```{r head_op, exercise = TRUE}
+
+```
+
+```{r head_op-solution}
+exRes$op$data %>% head(10)
+```
+
+<!-- ```{r head_op-code-check}
+gradethis::grade_this_code()
+``` -->
+
+PM_op also exposes other useful methods like `$summary`:
+
+```{r}
+exRes$op$summary(pred.type = "pop")
+exRes$op$summary(icen = "mean")
+```
+
+?summary.PMop for help
+
+## PM_final
+
+`PM_final$plot()` is used to plot the final population joint density. Type [?plot.PMfinal](https://lapkb.github.io/Pmetrics/reference/plot.PM_final.html) in
+the R console for help.
+
+The [PM_final](https://lapkb.github.io/Pmetrics/reference/PM_final.html) object is exposed by the `PM_result$final` attribute.
+
+```{r}
+exRes$final$plot()
+```
+
+Add a kernel density curve to the final plot:
+
+```{r density_final_plot, exercise = TRUE}
+
+```
+
+```{r density_final_plot-solution}
+exRes$final$plot(density=T)
+```
+
+<!-- ```{r density_final_plot-code-check}
+gradethis::grade_this_code()
+``` -->
+
+This plot can also generate bicariate plots by supplying the appropiate formulate using the R syntax `x~y`:
+
+```{r}
+exRes$final$plot(Ke~V,
+  marker = list(
+    color = "red",
+    symbol ="diamond"
+  ),
+  line = list(
+    color = "purple",
+    dash = "dash", width = 2
+  )
+)
+```
+
+As with the previous example, the original tidy-compatible object can be accessed through the `$data` attribute.
+
+```{r}
+exRes$final$data$popPoints
+```
+
+This object contains useful information about the final non-parametric distribution of the parameters and their relevant statistics, we again invite you to look at the diferent options available in the [documentation](https://lapkb.github.io/Pmetrics/reference/PM_final.html)
+
+```{r}
+exRes$final$summary()
+```
+
+## PM_cycle
+
+The [`PM_cycle`](https://lapkb.github.io/Pmetrics/reference/PM_cycle.html) object stores the information of the fitting process cycle-by-clycle. Things like the -2LL, Gamma/Lambda or evolution of the different parameters'statistics can be found in this object.
+
+Before showing the plotting function, it is important to realize that given the nature of the diverse data within this object, it might be possible that the general plot provided by Pmetrics might not necessarily fulfill your needs. By knowing where and how the data is stored, you can easily pull the specific data you need and plot it as you see fit.
+
+```{r}
+exRes$cycle$plot()
+```
+
+As expected this plot is giving us a general overview of the fitting process through the cycles.
+Expecific elements can be accessed through the `$data` attribute.
+like:
+
+```{r}
+exRes$cycle$data$ll %>% head()
+```
+
+or:
+
+```{r}
+exRes$cycle$data$mean %>% head()
+```
 
 ======ALL BELOW THIS LINE IS WORK IN PROGRESS======
 
-<!-- The following are the older S3 method with plot(...) for the first two
-examples You can use R6 or S3 for any Pmetrics object We will focus on
-R6 as the more modern way. plot(exRes$data) plot(exRes$data, xlim =
-c(119, 146), marker = list(color = "blue"))
+## PM_cov
 
-here's a summary of the original data file; ?summary.PM_data for help
-exRes$data$summary() -->
+This is the final object we will be learning about in this tutorial. This said, there are more plotting functionalities included for other objects in the package, but we will be reviewing those as we learn how to interact with those specific objects.
 
-Plot some observed vs. predicted data. Type ?plot.PM_op in the R console
-for help. exRes$op$plot() exRes$op$plot(pred.type = "pop")
-exRes$op$plot(line = list(lm = list(ci = .9, color = "red"), loess = F))
+The [`PM_cov`](https://lapkb.github.io/Pmetrics/reference/PM_cov.html) object contains all the information related to covariates and the relation with the primary models for the final bayesian posterior.
 
-The OP plot can be disaggregated into a Tidy compatible format using the
-$data field (see https://www.tidyverse.org/) library(tidyverse) exRes$op$data %>% plot() exRes$op\$data
-%\>% filter(pred \> 5) %\>% filter(pred \< 10) %\>% plot()
+Again, as in the bimodal plots for PM_final, we need to supply a plotting formulate in the R form `x~y`:
 
-the original op object data can be accessed via exRes$op$data
+```{r}
+exRes$cov$plot(V~wt)
+```
 
-see a header with the first 10 rows of the op object head(exRes$op$data, 10)
+Now is your turn, generate the same plot but with mean Bayesian posterior parameter values.
 
-get a summary with bias and imprecision of the population predictions;
-?summary.PMop for help exRes$op$summary(pred.type = "pop")
+```{r cov_icen_mean, exercise = TRUE}
 
-the S3 way summary(exRes\$op, pred.type = "pop")
+```
 
-look at the summary for the posterior predictions (default pred.type)
-based on means of parameter values exRes$op$summary(icen = "mean")
+```{r cov_icen_mean-solution}
+exRes$cov$plot(V~wt,icen ="mean")
+```
 
-Plot final population joint density information. Type ?plot.PMfinal in
-the R console for help. exRes$final$plot()
+<!-- ```{r cov_icen_mean-code-check}
+gradethis::grade_this_code()
+``` -->
 
-add a kernel density curve exRes$final$plot(density = T)
+`PM_cov` objects also provide a tidy-compatible structure that can be operated over:
 
-A bivariate plot. Plotting formulae in R are of the form 'y\~x'
-exRes$final$plot(Ke \~ V, marker = list(color = "red", symbol =
-"diamond"), line = list(color = "purple", dash = "dash", width = 2) )
+```{r}
+exRes$cov$data |>
+filter(age>25) |>
+plot(V ~ wt)
+```
 
-or the S3 way plot(exRes\$final)
+There are also more advance plots that can be done using `PM_cov$plot()`. Remember looking at the [documentation](https://lapkb.github.io/Pmetrics/reference/plot.PM_cov.html).
 
-The original final object can be accessed using exRes$final$data
-names(exRes$final$data)
-
-see the population points exRes$final$popPoints
-
-or exRes$final$data\$popPoints
-
-see the population mean parameter values exRes$final$popMean
-
-see a summary with confidence intervals around the medians and the
-Median Absolute Weighted Difference (MAWD); ?summary.PMfinal for help
-exRes$final$summary()
-
-Plot cycle information Type ?plot.PMcycle in the R console for help.
-exRes$cycle$plot()
-
-names of the cycle object; ?makeCycle for help names(exRes$cycle$data)
-
-gamma/lamda value on last 6 cycles tail(exRes$cycle$data\$gamlam)
-
-Plot covariate information. Type ?plot.PMcov in the R console for help.
-Recall that plotting formulae in R are of the form 'y\~x'
-exRes$cov$plot(V \~ wt) exRes$cov$data %\>% plot(V \~ wt) exRes$cov$data
-%\>% filter(age \> 25) %\>% plot(V \~ wt)
-
-exRes$cov$plot(Ke \~ age, lowess = F, reg = T, pch = 3)
-
-Same plot but with mean Bayesian posterior parameter and covariate
-values... Remember the 'icen' argument? exRes$cov$plot(V \~ wt, icen =
-"mean")
+```{r}
+exRes$cov$plot(Ke ~ age, lowess = F, reg = T, pch = 3)
+```
 
 When time is the x variable, the y variable is aggregated by subject. In
 R plot formulae, calculations on the fly can be included using the I()
-function exRes$cov$plot(I(V \* wt) \~ time)
+function:
 
-The previous cov object can be seen via: exRes\$cov
+```{r}
+exRes$cov$plot(I(V*wt) ~ time)
+```
 
-but to access individual elements, use: exRes$cov$data[, 1:3] for
-example names(exRes\$cov)
-
-summarize with mean covariates; ?summary.PM_cov for help
-exRes$cov$summary(icen = "mean")
-
-Look at all possible covariate-parameter relationships by multiple
-linear regression with forward and backward elimination - type ?PMstep
+<!-- Look at all possible covariate-parameter relationships by multiple
+linear regression with forward and backward elimination - type `?PMstep`
 in the R console for help.
 exRes$step() icen works here too.... exRes$step(icen = "median") forward
-elimination only exRes\$step(direction = "forward")
+elimination only exRes\$step(direction = "forward") -->
