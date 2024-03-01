@@ -86,7 +86,7 @@ gradethis::grade_this_code()
 
 A very useful diagnostic plot is to compare the individual observations of each subject with their correspondent posterior profiles. Look at the [documentation](https://lapkb.github.io/Pmetrics/reference/plot.PM_data.html).
 
-```{r plot_PM_data_question}
+```{r plot_PM_data_question, echo = FALSE}
 question("Which specific arguments do you think might be useful to generate the plot described above?",
           answer("include"),
           answer("line", correct = TRUE),

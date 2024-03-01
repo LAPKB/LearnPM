@@ -64,7 +64,7 @@ This tutorial was designed to accompany a workshop, but may be completed indepen
 
 2. You have also run [PMbuild](https://lapkb.github.io/Pmetrics/reference/PMbuild.html){target="_blank"} to compile the Pmetrics package.
 
-3. Completed the [pre-workshop exercises](http://www.lapk.org/workshop/July2023/Pre-Workshop.html){target="_blank"}. 
+3. Completed the [pre-workshop exercises](http://www.lapk.org/workshop/Mar2024/Pre-Workshop.html){target="_blank"}. 
 - You should have created a folder in your hard drive to store your Pmetrics projects. The suggested locations are "C:\\Pmetrics" for Windows users or "~/Pmetrics" for Mac/Linux users.
 - You should have loaded the Pmetrics library in R with `library(Pmetrics)` and created a *Workshop* folder within your *Pmetrics* folder using `PMtree("Workshop")`.
 - Your *Workshop* folder will contain subfolders as described in the help for [PMtree](https://lapkb.github.io/Pmetrics/reference/PMtree.html){target="_blank"}.

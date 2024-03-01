@@ -87,3 +87,17 @@ tidyup <- function(x){
   return(x2)
 }
 
+#' Colorize text
+#'
+#' Color text in tutorials
+#' @param x text to color
+#' @param color Color to use
+#' @export
+colorize <- function(x, color) {
+  if (knitr::is_latex_output()) {
+    sprintf("\\textcolor{%s}{%s}", color, x)
+  } else if (knitr::is_html_output()) {
+    sprintf("<span style='color: %s;'>%s</span>", color,
+            x)
+  } else x
+}

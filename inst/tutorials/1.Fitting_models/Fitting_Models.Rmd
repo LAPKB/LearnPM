@@ -17,6 +17,7 @@ editor_options:
 
 ```{r setup, include=FALSE, context="server"}
 library(learnr)
+library(LearnPM)
 library(Pmetrics)
 library(tidyverse)
 library(gradethis)
@@ -41,44 +42,42 @@ exFit <- PM_fit$new(model = modEx, data = dataEx)
 # About this tutorial
 
 Welcome to the Pmetrics model fitting tutorial. This tutorial will briefly introduce you to the R programming language and the Pmetrics modeling framework.
-The man topics of this tutorial are:
+The main topics of this tutorial are:
 
-- Create and maipulate `PM_data` and `PM_model` objects.
+- Create and manipulate `PM_data` and `PM_model` objects.
 - Use those objects to create a `PM_fit` object.
 - Learn how to interact with the `PM_fit` object and execute it.
 - Interact with the `PM_result` object.
 
+`r colorize("NOTE: ", "red")` to open hyperlinks in a new tab:
+
+* Mac: `r knitr::asis_output("\U2318")` + click
+* Windows/Linux: Ctrl + click
+
 ## R and Pmetrics basics
 
-This is by no means an exhaustive R [tutorial](https://www.w3schools.com/r/), this section will only cover the basics needed to execute pmetrics and to go through the tutorial.
+This is by no means an exhaustive R [tutorial](https://www.w3schools.com/r/).
+We will only cover the basics needed to execute Pmetrics and work through the tutorial.
 
-R is a [interpreded](https://en.wikipedia.org/wiki/Scripting_language), dynamic-typed, object oriented programming language, it is mainly used by data scientist an researches all around the world to perform data-analysis, statistical-inference and even artificial intelligence, between other uses.
+R is an [interpreted](https://en.wikipedia.org/wiki/Scripting_language), dynamic-typed, object oriented programming language, it is mainly used by data scientist and researchers around the world to perform data analysis, statistical inference, data visualization, and even artificial intelligence.
 
 At any point, you can get help by typing
 ?function_name in the R console (the lower left window pane in RStudio).
 
 Try getting help for plot.PM_op().
 
-```{r function_help, exercise=TRUE}
+```{r function_help, exercise=TRUE, exercise.completion = FALSE}
 
 ```
 
-<!-- ::: {#function-help-hint} -->
-<!-- **Hint:** You don't need to include the parentheses when asking for -->
-<!-- help. -->
-<!-- ::: -->
 
 ```{r function_help-hint}
-You don't need to include the parentheses when asking for help.
+#You don't need to include the parentheses when asking for help.
 ```
 
 ```{r function_help-solution}
 ?plot.PM_op
 ```
-
-<!-- ```{r function_help-code-check}
-gradethis::grade_code()
-``` -->
 
 When you begin an R script you must always load Pmetrics, because the
 data and functions in the package are not automatically available to you
@@ -92,7 +91,7 @@ library(Pmetrics)
 
 ## Script structure and comments
 
-As you develop R scripts that have your analysis, it is useful to annotate with
+As you develop R scripts that have your analyses, it is useful to annotate with
 comments so that you can remember what you did later! Comment lines in R begin
 with "#". A script might look like this.
 
@@ -117,18 +116,14 @@ run1 <- PM_load(1)
 
 # Run 3...
 # ...
-)
+
 ```
 
 Don't worry about the details now. We'll cover all this in the tutorial.
 In your scripts, including in the above example, you will need to tell R which
 directory your files are in. This is called the "working directory" in R.
 
-<!-- In this tutorial, you don't have to do this, but the command is:
 
-```{r eval = F}
-setwd()
-``` -->
 
 Include the full path or path relative to your current working directory
 in quotes between the parentheses. Windows users: Make sure that you
@@ -188,9 +183,6 @@ exData.
 exData <- PM_data$new("data/data.csv")
 ```
 
-<!-- ```{r read_data-code-check}
-gradethis::grade_this_code()
-``` -->
 
 When you create a `PM_data` object, you see a report of any
 standardizations or fixes Pmetrics attempted. In this case (of course),
@@ -269,10 +261,6 @@ Now, you try plotting exData
 ```{r plot_data-solution}
 exData$plot()
 ```
-
-<!-- ```{r plot_data-code-check}
-gradethis::grade_this_code()
-``` -->
 
 ## Model object
 
