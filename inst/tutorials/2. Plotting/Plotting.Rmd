@@ -206,7 +206,7 @@ exRes$final$plot(density=T)
 gradethis::grade_this_code()
 ``` -->
 
-This plot can also generate bicariate plots by supplying the appropiate formulate using the R syntax `x~y`:
+This function can also generate bivariate plots by supplying the appropiate formulate using the R syntax `x~y`:
 
 ```{r}
 exRes$final$plot(Ke~V,
