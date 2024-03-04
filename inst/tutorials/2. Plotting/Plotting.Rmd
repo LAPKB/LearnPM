@@ -19,8 +19,7 @@ editor_options:
 library(learnr)
 library(Pmetrics)
 library(tidyverse)
-library(gradethis)
-gradethis::gradethis_setup()
+
 knitr::opts_chunk$set(echo = TRUE)
 wd<-tempdir()
 setwd(wd)
@@ -80,9 +79,7 @@ Now, you try plotting the same PM_data object but only between hours 120-145. Re
 exRes$data$plot(xlim = c(119, 145))
 ```
 
-<!-- ```{r exerc_plot_1-code-check}
-gradethis::grade_this_code()
-``` -->
+
 
 A very useful diagnostic plot is to compare the individual observations of each subject with their correspondent posterior profiles. Look at the [documentation](https://lapkb.github.io/Pmetrics/reference/plot.PM_data.html).
 
@@ -108,9 +105,7 @@ How would you generate that plot?
 exRes$data$plot(overlay=F,line=list(pred=exRes$post))
 ```
 
-<!-- ```{r data_pred_plot-code-check}
-gradethis::grade_this_code()
-``` -->
+
 
 In this case, as we want individual plots for each subject `overlay` must be set to False and because we want to plot the posterior predictions we pass the `exRes$post` object to the `Line` argument.
 
@@ -127,9 +122,7 @@ exRes$data$plot(line=list(pred=exRes$pop))
 ```
 
 <!-- exRes$data$plot(line = list(join = F, pred = exRes$post),marker = list(color = "blue", symbol = 2)) -->
-<!-- ```{r data_pred_pop_plot-code-check}
-gradethis::grade_this_code()
-``` -->
+
 
 ## Observed vs Predicted
 
@@ -168,9 +161,7 @@ Try using the `head()` function and the pipe operator `%>%` to print the first 1
 exRes$op$data %>% head(10)
 ```
 
-<!-- ```{r head_op-code-check}
-gradethis::grade_this_code()
-``` -->
+
 
 PM_op also exposes other useful methods like `$summary`:
 
@@ -202,9 +193,7 @@ Add a kernel density curve to the final plot:
 exRes$final$plot(density=T)
 ```
 
-<!-- ```{r density_final_plot-code-check}
-gradethis::grade_this_code()
-``` -->
+
 
 This function can also generate bivariate plots by supplying the appropiate formulate using the R syntax `x~y`:
 
@@ -281,9 +270,7 @@ Now is your turn, generate the same plot but with mean Bayesian posterior parame
 exRes$cov$plot(V~wt,icen ="mean")
 ```
 
-<!-- ```{r cov_icen_mean-code-check}
-gradethis::grade_this_code()
-``` -->
+
 
 `PM_cov` objects also provide a tidy-compatible structure that can be operated over:
 
