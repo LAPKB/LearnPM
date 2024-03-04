@@ -43,6 +43,18 @@ mod1 <- PM_model$new(
   )
 )
 
+temp1 <- PM_data$new()$
+  addEvent(id = 1, time = 0, dose = 500, addl = 5, ii = 24, wt = 75, africa = 0, age = 25, gender = 1, height = 170)$
+  addEvent(id = 1, time = 144, out = -1)$
+  addEvent(id = 2, time = 0, dose = 1000, addl = 5, ii = 24, wt = 75, africa = 0, age = 25, gender = 1, height = 170)$
+  addEvent(id = 2, time = 144, out = -1)$
+  addEvent(id = 3, time = 0, dose = 250, addl = 11, ii = 12, wt = 75, africa = 0, age = 25, gender = 1, height = 170)$
+  addEvent(id = 3, time = 144, out = -1)$
+  addEvent(id = 4, time = 0, dose = 500, addl = 11, ii = 12, wt = 75, africa = 0, age = 25, gender = 1, height = 170)$
+  addEvent(id = 4, time = 144, out = -1, validate = TRUE, quiet = TRUE)
+
+
+
 dat <- PM_data$new()$
   addEvent(id = 1, time = 0, dose = 4000, dur = 0.5, addl = 8, ii = 8, wt = -1, ccr = 90)$
   addEvent(id = 1, time = 72, out = -1)$
@@ -52,7 +64,21 @@ dat <- PM_data$new()$
   addEvent(id = 3, time = 72, out = -1, validate = TRUE, quiet = TRUE)
 
 ```
+## About this tutorial
 
+Welcome to the Pmetrics simulation tutorial. This tutorial will briefly introduce you to the R programming language and the Pmetrics simulation framework.
+The main topics of this tutorial are:
+
+- Understanding data templates
+- Simulating from prior model fitting runs
+- Simulating from literature extractions
+- Conducting probability of target attainment
+- Plotting simulation objects
+
+`r colorize("NOTE: ", "red")` to open hyperlinks in a new tab:
+
+* Mac: `r knitr::asis_output("\U2318")` + click
+* Windows/Linux: Ctrl + click
 ## Foundations
 
 This tutorial was designed to accompany a workshop, but may be completed independently. We assume that you have completed several tasks.
@@ -60,7 +86,7 @@ This tutorial was designed to accompany a workshop, but may be completed indepen
 **NOTE: This is best viewed in a browser. Click the "Open in Browser" button at the top left corner.**
 
 1. Installed R, Rstudio, and Pmetrics.
-- If you have not done so already, you can obtain everything you need by following these [instructions](http://www.lapk.org/Pmetrics_install.php){target="_blank"}. **Important**: For this workshop we are using a beta version of Pmetrics, v. 2.1.0. Prior versions will not work. Replace the command in step 4 with `devtools::install_github("LAPKB/Pmetrics@dev")`. 
+- If you have not done so already, you can obtain everything you need by following these [instructions](http://www.lapk.org/Pmetrics_install.php){target="_blank"}. **Important**: For this workshop we are using a beta version of Pmetrics, v. 2.1.0. Prior versions will not work. Replace the command in step 4 with `remotes::install_github("LAPKB/Pmetrics@dev")`. 
 
 2. You have also run [PMbuild](https://lapkb.github.io/Pmetrics/reference/PMbuild.html){target="_blank"} to compile the Pmetrics package.
 
@@ -145,6 +171,66 @@ However, since they are all in the *PM_result* object as discussed, you don't ha
            allow_retry = TRUE
   )
 ```
+
+### Your first simulation - create the data template
+
+We're going to simulate in R for this. The first task is to create the data template.
+
+
+There are two ways to create the data template. The first is to use a spreadsheet program like Excel. The second is to create a template on the fly in R. Here we'll look at the first option.
+
+Be sure to look at the article on Pmetrics [data objects](https://lapkb.github.io/Pmetrics/articles/data.html){target="_blank"} for details on the column headers and meanings of the columns.
+
+### Create data template in a spreadsheet program
+
+The task is to create a template data file with four different oral dose regimens: 
+
+* 500 mg once daily, 
+* 1000 mg once daily, 
+* 250 mg twice daily, 
+* 500 mg twice daily.  
+
+Simulate the time of the last observation at 144 hours for each.  
+
+1. Open the program, e.g. Excel.
+2. Name your columns: ID, TIME, DOSE, ADDL, II, OUT, WT, AFRICA, AGE, GENDER, HEIGHT. We won't be using the covariates, but since they are in the model within `NPex` we need to include them in our template.
+3. Make 4 subjects, each with the following.
+- A DOSE at TIME 0 according to our goal doses above.
+- The right number of ADDL doses so that the last dose is given at TIME = 144 with dosing at an appropriate II interval. 
+- Follow the dosing by one OUT with value -1 at time 144 (24 hours after the last dose)
+- Fill in WT = 75, AFRICA = 0, AGE = 25, GENDER = 1, HEIGHT = 170 for every row.
+4. Save the file as "temp.csv". If you made a `/src` folder in the pre-workshop exercises, put the file there. If your spreadsheet uses semicolons (;) as field separators, you'll need to update Pmetrics with `setPMoptions(sep = ";")`.
+5. Read the file into R with `dat1 <- PM_data$new("temp.csv")`. Be sure that temp.csv is in your current working directory in R.
+
+
+### Run the simulation in R
+
+Use all default simulation arguments except add the following:
+
+* `limits = c(0,3)` Simulated parameter values within the range of 0 * *lower* and 
+3 * *upper* will be accepted. It puts some physiologic boundaries on simulated values.
+* `predInt = 1` Output will be simulated every hour from time 0 to the last time in each subject's record (i.e. 144).
+
+Assign the output to an object called `sim1`. Try writing the simulation statement in R yourself, and after check here to make sure it's correct.
+
+<details>
+<summary>Check your code</summary>
+`sim1 <- NPex$sim(data = dat1, predInt = 1, limits = c(0,3))`
+</details>
+
+
+Explore your new simulation in R. 
+
+
+<details>
+<summary>Plot the 3rd simulation with default quantiles.</summary>
+`sim1$plot(at = 3)`
+</details>
+
+<details>
+<summary>Plot only the 25th and 75th percentiles of the simulated profiles for the 2nd simulation.</summary>
+`sim1$plot(at = 2, line = list(probs = c(0.25, 0.75)))`
+</details>
 
 
 ## Simulating from literature
@@ -273,9 +359,9 @@ To do this, we are going to simulate steady-state PK profiles based on the piper
 
 ## Create the data template
 
-There are two ways to create the data template. The first is to use a spreadsheet program like Excel. The second is to create a template on the fly in R. Let's look at both methods.
+As you recall, there are two ways to create the data template. We already used the first to create a spreadsheet in a program like Excel. The second is to create a template on the fly in R. Let's look at the spreadsheet method again, then compare it to a template on the fly.
 
-Be sure to look at the article on Pmetrics [data objects](https://lapkb.github.io/Pmetrics/articles/data.html){target="_blank"} for details on the column headers and meanings of the columns.
+Again, if you need a data format refresher, look at the article on Pmetrics [data objects](https://lapkb.github.io/Pmetrics/articles/data.html) for details on the column headers and meanings of the columns.
 
 ### Option 1: Create in spreadsheet program
 
