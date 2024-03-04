@@ -50,8 +50,8 @@ The main topics of this tutorial are:
 
 `r colorize("NOTE: ", "red")` to open hyperlinks in a new tab:
 
-* Mac: `r knitr::asis_output("\U2318")` + click
-* Windows/Linux: Ctrl + click
+- Mac: `r knitr::asis_output("\U2318")` + click
+- Windows/Linux: Ctrl + click
 
 ## R and Pmetrics basics
 
@@ -68,7 +68,6 @@ Try getting help for plot.PM_op().
 ```{r function_help, exercise=TRUE, exercise.completion = FALSE}
 
 ```
-
 
 ```{r function_help-hint}
 #You don't need to include the parentheses when asking for help.
@@ -121,8 +120,6 @@ run1 <- PM_load(1)
 Don't worry about the details now. We'll cover all this in the tutorial.
 In your scripts, including in the above example, you will need to tell R which
 directory your files are in. This is called the "working directory" in R.
-
-
 
 Include the full path or path relative to your current working directory
 in quotes between the parentheses. Windows users: Make sure that you
@@ -181,7 +178,6 @@ exData.
 ```{r read_data-solution}
 exData <- PM_data$new("data/data.csv")
 ```
-
 
 When you create a `PM_data` object, you see a report of any
 standardizations or fixes Pmetrics attempted. In this case (of course),
@@ -359,6 +355,7 @@ To keep everything tidy, let's move to another folder specific to store
 the runs notice that we are not moving any file to this folder.
 
 ```{r fit_run_1, exercise = TRUE}
+#setwd("..")
 exFit$run(intern = T) #execute the run with the default arguments
 ```
 
@@ -373,6 +370,7 @@ One benefit of having this fit object is that it is possible to run
 multiple fittings without needing to move datafiles around getwd().
 
 ```{r list_run_1, exercise = TRUE}
+#setwd("..")
 list.files()
 ```
 
@@ -385,7 +383,50 @@ Create a PM_result object by reading a run folder. The "1" in the
 parentheses tells Pmetrics to look in the /1 folder.
 
 ```{r load_run_1, exercise = TRUE}
+#setwd("..")
 exRes <- PM_load(1)
 ```
 
 We will go into detail about the Result object in the next tutorial.
+
+## Final Exercises
+
+### Exercise #1
+
+Update the model scaling the volume to weight. Run only 50 cycles. Hint: use a primary variable V0 and a secondary variable V = V0\*wt.
+
+```{r ex1, exercise = TRUE}
+
+```
+
+```{r ex1-solution}
+mod1$update(list(
+  pri = list(
+   V = NULL,
+   V0 = ab(10, 100)
+  ),
+  sec = "V = V0 * WT"
+))
+fit <- PM_fit$new(model = mod1, data = exData)
+fit$run(cycles=50)
+```
+
+### Exercise #2
+
+Compare your original model to the models you made originally and in Exercise #1.
+Which model would you choose? Hint: use PM_compare() after loading the runs you want to compare.
+
+```{r ex2, exercise = TRUE}
+
+```
+
+```{r ex2-solution}
+#This assumes both runs are in folders 2 and 3 respectively
+res1 <- PM_load(1)
+res2 <- PM_load(2)
+PM_compare(res1,res2)
+```
+
+### Exercise #3
+
+With the model you picked in the previous exercise, run it again, starting where you left off, for up to 5000 more cycles. Hint: use the prior argument to the $run() function.
