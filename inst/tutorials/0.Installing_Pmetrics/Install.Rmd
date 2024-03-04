@@ -15,6 +15,14 @@ editor_options:
     wrap: 72
 ---
 
+```{r setup, include=FALSE}
+library(learnr)
+library(LearnPM)
+library(Pmetrics)
+library(tidyverse)
+
+```
+
 `r colorize("NOTE: ", "red")` to open hyperlinks in a new tab:
 
 * Mac: `r knitr::asis_output("\U2318")` + click

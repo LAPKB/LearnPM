@@ -17,6 +17,7 @@ editor_options:
 
 ```{r setup, include=FALSE, context="server"}
 library(learnr)
+library(LearnPM)
 library(Pmetrics)
 library(tidyverse)
 
