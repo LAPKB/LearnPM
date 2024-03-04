@@ -34,7 +34,7 @@ If this option fails, here you have other options based on your OS:
 
 * Windows: Install [Chocolatey](https://chocolatey.org/install), and then install [mingw](https://community.chocolatey.org/packages/mingw) using this command: `choco install mingw`. Remember to restart Rstudio after doing this.
 * Linux: There are multiple ways to install gfotran on Linux, depending on the specific distribution you're using the name of the package might be different. In the case of Ubuntu and Ubuntu-like distributions gfotran is included in the build-essentials package `sudo apt install build-essentials`.
-* Mac: The easiest way to get gfotran installed on a MacOs computer is to use [Homebrew](https://brew.sh/) using this command: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` and following the instructions at the end of the script. Finally install gcc (gfotran is part of the gcc package): `brew install gcc`.
+* Mac: The easiest way to get gfotran installed on a MacOs computer is to use [Homebrew](https://brew.sh/) using this command: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` and following the instructions at the end of the script (This is important, as those instructions are needed for the `brew` command to become available). Finally install gcc (gfotran is part of the gcc package): `brew install gcc`.
 
 After installing Gfotran run `PMbuild()`. You should be seeing a message like this one:
 
