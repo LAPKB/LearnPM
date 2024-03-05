@@ -1,6 +1,6 @@
 ---
 title: "Simulations and PTA"
-output: 
+output:
   learnr::tutorial:
     progressive: true
     allow_skip: true
@@ -64,9 +64,9 @@ dat <- PM_data$new()$
   addEvent(id = 3, time = 72, out = -1, validate = TRUE, quiet = TRUE)
 
 ```
+
 ## About this tutorial
 
-<<<<<<< HEAD
 Welcome to the Pmetrics simulation tutorial. This tutorial will briefly introduce you to the R programming language and the Pmetrics simulation framework.
 The main topics of this tutorial are:
 
@@ -78,8 +78,9 @@ The main topics of this tutorial are:
 
 `r colorize("NOTE: ", "red")` to open hyperlinks in a new tab:
 
-* Mac: `r knitr::asis_output("\U2318")` + click
-* Windows/Linux: Ctrl + click
+- Mac: `r knitr::asis_output("\U2318")` + click
+- Windows/Linux: Ctrl + click
+
 ## Foundations
 
 This tutorial was designed to accompany a workshop, but may be completed independently. We assume that you have completed several tasks.
@@ -87,35 +88,34 @@ This tutorial was designed to accompany a workshop, but may be completed indepen
 **NOTE: This is best viewed in a browser. Click the "Open in Browser" button at the top left corner.**
 
 1. Installed R, Rstudio, and Pmetrics.
-- If you have not done so already, you can obtain everything you need by following these [instructions](http://www.lapk.org/Pmetrics_install.php){target="_blank"}. **Important**: For this workshop we are using a beta version of Pmetrics, v. 2.1.0. Prior versions will not work. Replace the command in step 4 with `remotes::install_github("LAPKB/Pmetrics@dev")`. 
-=======
-**NOTE: This is best viewed in a browser. Click the "Open in Browser" button at the top left corner.**
 
->>>>>>> julian
+- If you have not done so already, you can obtain everything you need by following these [instructions](http://www.lapk.org/Pmetrics_install.php){target="\_blank"}. **Important**: For this workshop we are using a beta version of Pmetrics, v. 2.1.0. Prior versions will not work. Replace the command in step 4 with `remotes::install_github("LAPKB/Pmetrics@dev")`.
 
 ## Foundations
 
-This tutorial was designed to accompany a workshop, but may be completed independently. We assume that you have completed the [pre-workshop exercises](http://www.lapk.org/workshop/Mar2024/Pre-Workshop.html){target="_blank"}. 
+This tutorial was designed to accompany a workshop, but may be completed independently. We assume that you have completed the [pre-workshop exercises](http://www.lapk.org/workshop/Mar2024/Pre-Workshop.html){target="\_blank"}.
+
 - You should have created a folder in your hard drive to store your Pmetrics projects. The suggested locations are "C:\\Pmetrics" for Windows users or "~/Pmetrics" for Mac/Linux users.
-- You should have loaded the Pmetrics library in R with `library(Pmetrics)` and created a *Workshop* folder within your *Pmetrics* folder using `PMtree("Workshop")`.
-- Your *Workshop* folder will contain subfolders as described in the help for [PMtree](https://lapkb.github.io/Pmetrics/reference/PMtree.html){target="_blank"}.
+- You should have loaded the Pmetrics library in R with `library(Pmetrics)` and created a _Workshop_ folder within your _Pmetrics_ folder using `PMtree("Workshop")`.
+- Your _Workshop_ folder will contain subfolders as described in the help for [PMtree](https://lapkb.github.io/Pmetrics/reference/PMtree.html){target="\_blank"}.
 
 **Let's get started!**
 
 ## Simulation from prior model fitting
 
-Recall that Pmetrics always requires a data file and a model file. Once it has these, it fits the data to the model to estimate the probability distributions of the parameter values in the model equations. When you load these results with [PM_load](https://lapkb.github.io/Pmetrics/reference/PM_load.html){target="_blank"}, you can use them for simulations among other things.
+Recall that Pmetrics always requires a data file and a model file. Once it has these, it fits the data to the model to estimate the probability distributions of the parameter values in the model equations. When you load these results with [PM_load](https://lapkb.github.io/Pmetrics/reference/PM_load.html){target="\_blank"}, you can use them for simulations among other things.
 
-### Look at PM_result objects 
+### Look at PM_result objects
 
 Pmetrics comes with the results of a run built in for you to use. Look at the description.
-``` {r npex, exercise = TRUE}
+
+```{r npex, exercise = TRUE}
 ?NPex
 ```
 
-*NPex* is a [PM_result](https://lapkb.github.io/Pmetrics/reference/PM_result.html){target="_blank"} object. Click on the link to see a description of the fields and methods contained within *NPex*.
+_NPex_ is a [PM_result](https://lapkb.github.io/Pmetrics/reference/PM_result.html){target="\_blank"} object. Click on the link to see a description of the fields and methods contained within _NPex_.
 
-``` {r npex-quiz}
+```{r npex-quiz}
 quiz(
   caption = "Understanding PM_result objects",
   question("R6 objects like NPex, a PM_result object, can have data fields and methods.",
@@ -137,34 +137,32 @@ quiz(
 )
 ```
 
-This is the easiest way to simulate, because you've already made your data and model objects. Note that *PM_result* objects also contain data and model fields, which in turn contain your original data and model objects. 
-
-
+This is the easiest way to simulate, because you've already made your data and model objects. Note that _PM_result_ objects also contain data and model fields, which in turn contain your original data and model objects.
 
 ### Simulate from PM_result
 
-Now that you know how to access the simulation method attached to a *PM_result* object that is 
-generated by [PM_load](https://lapkb.github.io/Pmetrics/reference/PM_load.html){target="_blank"}, let's use it!
+Now that you know how to access the simulation method attached to a _PM_result_ object that is
+generated by [PM_load](https://lapkb.github.io/Pmetrics/reference/PM_load.html){target="\_blank"}, let's use it!
 
-Like all "engines" in Pmetrics, the simulator needs a model, and some data. In this case the data serve as a template for the doses, covariates, outputs and timing of samples that you want to simulate. The simulator also needs to know the distributions you want to use for the parameter values in the model equations. If you want to use the same model, data, and parameter value distributions as you used in the original fitting, it's very easy to access those in the *PM_result* object.
+Like all "engines" in Pmetrics, the simulator needs a model, and some data. In this case the data serve as a template for the doses, covariates, outputs and timing of samples that you want to simulate. The simulator also needs to know the distributions you want to use for the parameter values in the model equations. If you want to use the same model, data, and parameter value distributions as you used in the original fitting, it's very easy to access those in the _PM_result_ object.
 
-* The model is in the `$model` field.
-* The data are in the `$data` field.
-* The parameter values are in the `$final` field, and specifically the `$final$popMeans` for the mean values, and `$final$popCov` for the covariances.
+- The model is in the `$model` field.
+- The data are in the `$data` field.
+- The parameter values are in the `$final` field, and specifically the `$final$popMeans` for the mean values, and `$final$popCov` for the covariances.
 
 Here's how simple the code can be:
 
 `NPex$sim()`
 
-Arguments that can go within the parentheses are all supplied to the [SIMrun](https://lapkb.github.io/Pmetrics/reference/SIMrun.html){target="_blank"} function, which is the function that the `$sim()` method calls. `SIMrun` requires the following arguments at minimum:
+Arguments that can go within the parentheses are all supplied to the [SIMrun](https://lapkb.github.io/Pmetrics/reference/SIMrun.html){target="\_blank"} function, which is the function that the `$sim()` method calls. `SIMrun` requires the following arguments at minimum:
 
-* `poppar` are parameter value distributions
-* `model` is the model object
-* `data` is the data template
+- `poppar` are parameter value distributions
+- `model` is the model object
+- `data` is the data template
 
-However, since they are all in the *PM_result* object as discussed, you don't have to supply them! 
+However, since they are all in the _PM_result_ object as discussed, you don't have to supply them!
 
-``` {r simrun-question}
+```{r simrun-question}
 
   question("Look at the help for SIMrun with the link above. Which of the following are arguments to SIMrun? Choose all that apply.",
            answer("limits", correct = TRUE),
@@ -181,40 +179,40 @@ However, since they are all in the *PM_result* object as discussed, you don't ha
 
 We're going to simulate in R for this. The first task is to create the data template.
 
-
 There are two ways to create the data template. The first is to use a spreadsheet program like Excel. The second is to create a template on the fly in R. Here we'll look at the first option.
 
-Be sure to look at the article on Pmetrics [data objects](https://lapkb.github.io/Pmetrics/articles/data.html){target="_blank"} for details on the column headers and meanings of the columns.
+Be sure to look at the article on Pmetrics [data objects](https://lapkb.github.io/Pmetrics/articles/data.html){target="\_blank"} for details on the column headers and meanings of the columns.
 
 ### Create data template in a spreadsheet program
 
-The task is to create a template data file with four different oral dose regimens: 
+The task is to create a template data file with four different oral dose regimens:
 
-* 500 mg once daily, 
-* 1000 mg once daily, 
-* 250 mg twice daily, 
-* 500 mg twice daily.  
+- 500 mg once daily,
+- 1000 mg once daily,
+- 250 mg twice daily,
+- 500 mg twice daily.
 
-Simulate the time of the last observation at 144 hours for each.  
+Simulate the time of the last observation at 144 hours for each.
 
 1. Open the program, e.g. Excel.
 2. Name your columns: ID, TIME, DOSE, ADDL, II, OUT, WT, AFRICA, AGE, GENDER, HEIGHT. We won't be using the covariates, but since they are in the model within `NPex` we need to include them in our template.
 3. Make 4 subjects, each with the following.
+
 - A DOSE at TIME 0 according to our goal doses above.
-- The right number of ADDL doses so that the last dose is given at TIME = 144 with dosing at an appropriate II interval. 
+- The right number of ADDL doses so that the last dose is given at TIME = 144 with dosing at an appropriate II interval.
 - Follow the dosing by one OUT with value -1 at time 144 (24 hours after the last dose)
 - Fill in WT = 75, AFRICA = 0, AGE = 25, GENDER = 1, HEIGHT = 170 for every row.
+
 4. Save the file as "temp.csv". If you made a `/src` folder in the pre-workshop exercises, put the file there. If your spreadsheet uses semicolons (;) as field separators, you'll need to update Pmetrics with `setPMoptions(sep = ";")`.
 5. Read the file into R with `dat1 <- PM_data$new("temp.csv")`. Be sure that temp.csv is in your current working directory in R.
-
 
 ### Run the simulation in R
 
 Use all default simulation arguments except add the following:
 
-* `limits = c(0,3)` Simulated parameter values within the range of 0 * *lower* and 
-3 * *upper* will be accepted. It puts some physiologic boundaries on simulated values.
-* `predInt = 1` Output will be simulated every hour from time 0 to the last time in each subject's record (i.e. 144).
+- `limits = c(0,3)` Simulated parameter values within the range of 0 \* _lower_ and
+  3 \* _upper_ will be accepted. It puts some physiologic boundaries on simulated values.
+- `predInt = 1` Output will be simulated every hour from time 0 to the last time in each subject's record (i.e. 144).
 
 Assign the output to an object called `sim1`. Try writing the simulation statement in R yourself, and after check here to make sure it's correct.
 
@@ -223,9 +221,7 @@ Assign the output to an object called `sim1`. Try writing the simulation stateme
 `sim1 <- NPex$sim(data = dat1, predInt = 1, limits = c(0,3))`
 </details>
 
-
-Explore your new simulation in R. 
-
+Explore your new simulation in R.
 
 <details>
 <summary>Plot the 3rd simulation with default quantiles.</summary>
@@ -237,7 +233,6 @@ Explore your new simulation in R.
 `sim1$plot(at = 2, line = list(probs = c(0.25, 0.75)))`
 </details>
 
-
 ## Simulating from literature
 
 Simulating from the literature is a more complex process because you need to create your own model object with equations that correspond to the ones in the published work. You also need to create a data object with relevant dosing and covariates, and lastly you need to specify prior distributions (means and covariances) for all the parameters in the model. It may not be immediately apparent from the paper where to get all those things, so the next several topics will deal with that.
@@ -246,12 +241,13 @@ Simulating from the literature is a more complex process because you need to cre
 
 Review the piperacillin PopPK model from Li et al., JAC 2005. The following R code included in the LearnPM package will open the pdf in your default viewer. In these exercises, we will learn and practice extracting parameters for pharmacometric models from published literature.
 
-``` {r open-pdf, exercise = TRUE}
+```{r open-pdf, exercise = TRUE}
 pkgPDF("Li_JAC_2005.pdf")
 ```
 
 ### Quiz
-``` {r extraction-quiz}
+
+```{r extraction-quiz}
 quiz(
   caption = "Extracting from a paper",
   question("How many compartments do the authors report for the final model?",
@@ -287,13 +283,13 @@ quiz(
 )
 ```
 
-Know that $\omega$ is the standard deviation of $\eta$. To derive $\omega$ from CV%, use the approximation $\omega = CV\%$ when CV% is small (<50%), or the more exact formula  $\omega = \sqrt{log((\frac{CV\%}{100})^2 + 1)}$.
+Know that $\omega$ is the standard deviation of $\eta$. To derive $\omega$ from CV%, use the approximation $\omega = CV\%$ when CV% is small (<50%), or the more exact formula $\omega = \sqrt{log((\frac{CV\%}{100})^2 + 1)}$.
 
 Again using Table 2, let's extract the correct values for our simulations with piperacillin. We'll use clearance as the example, but the same will apply to volume.
 
 ### Quiz
 
-``` {r theta-cl}
+```{r theta-cl}
 quiz(caption = "Extracting necessary values",
      question("What is the typical value of $\\theta_1$ (CL_int)?",
               answer("5.05", correct = TRUE),
@@ -330,8 +326,9 @@ quiz(caption = "Extracting necessary values",
 
 It's important to include covariate relationships with model parameters. The paper by Liu et al has relationships between covariates and two primary model parameters.
 
-### Quiz 
-``` {r covariate-question}
+### Quiz
+
+```{r covariate-question}
 question("Try writing the equation from the paper that relates body weight to
 volume. Use *V* for volume, *V_slope* for $\\theta_3$ and *WT* for weight. Spacing and case don't matter.", type = "learnr_text",
 answer_fn(\(x){
@@ -351,16 +348,18 @@ Obviously there is a similar equation for Clearance.
 
 ## Define simulation goals
 
-Here we have no quizes, but we want to test three different piperacillin dosage regimens for how well they achieve desired concentration profiles in the population. 
+Here we have no quizes, but we want to test three different piperacillin dosage regimens for how well they achieve desired concentration profiles in the population.
 
 To do this, we are going to simulate steady-state PK profiles based on the piperacillin model in populations with:
 
-* 3 piperacillin dosage regimens in 1000 subjects each
-- 4g q8h (30 min infusion)
-- 4g q8h (4h infusion)
-- 12g continuous infusion
-* Fixed, normal renal function (90 mL/min)
-* Variable (random) weights with mean 82 kg, SD 25 kg
+- 3 piperacillin dosage regimens in 1000 subjects each
+
+* 4g q8h (30 min infusion)
+* 4g q8h (4h infusion)
+* 12g continuous infusion
+
+- Fixed, normal renal function (90 mL/min)
+- Variable (random) weights with mean 82 kg, SD 25 kg
 
 ## Create the data template
 
@@ -373,11 +372,13 @@ Again, if you need a data format refresher, look at the article on Pmetrics [dat
 1. Open the program, e.g. Excel.
 2. Name your columns: ID, TIME, DOSE, DUR, ADDL, II, OUT, CCR. We are not including WT as a covariate because we will simulate it.
 3. Make 3 subjects, each with the following.
+
 - A DOSE at TIME 0 according to our goal doses
 - A DUR according to the duration of the infusion
-- The right number of ADDL doses so that the last dose is given at TIME = 48 with dosing at an appropriate II interval. For the continuous infusion, give one dose at time 0, DUR = 24, ADDL = 2, II = 24.  
+- The right number of ADDL doses so that the last dose is given at TIME = 48 with dosing at an appropriate II interval. For the continuous infusion, give one dose at time 0, DUR = 24, ADDL = 2, II = 24.
 - Follow the dosing by one OUT with value -1 at time 72 (24 hours after the last dose)
 - Fill in CCR = 90 in every row.
+
 4. Save the file as "pip.csv". If you made a `/src` folder in the pre-workshop exercises, put the file there. If your spreadsheet uses semicolons (;) as field separators, you'll need to update Pmetrics with `setPMoptions(sep = ";")`.
 
 ### Option 2: Create in R
@@ -457,21 +458,25 @@ dat <- PM_data$new()$
 
 **As final steps**, please do the following.
 
-1. Open the *Workshop.R* file in the *Rscript* folder of the *Workshop* project folder you made with `PMtree` previously. This file is designed to get you started building a model from data. In this case, we are developing simulations from the literature. 
+1. Open the _Workshop.R_ file in the _Rscript_ folder of the _Workshop_ project folder you made with `PMtree` previously. This file is designed to get you started building a model from data. In this case, we are developing simulations from the literature.
 2. Copy and paste your full data template creation code into your Rscript and save it.
-3. You can also copy and paste the file you made in Option 1 into the *Sim* folder. Call that file "simtpt.csv", short for "simulation template".
-4. In your *Workshop.R* script, save the object you created as a second template file.
-- Change the working directory with [setwd](https://rdrr.io/r/base/getwd.html){target="_blank"}. 
-* You can first execute line 6 to change the working directory to the *Runs* folder in your project. 
-* Then use this command to switch to the *Sim* folder: `setwd("../Sim")`
-- Use `dat$write("simtpt2.csv")` to save the `PM_data` object you made into the *Sim* folder of your project.
+3. You can also copy and paste the file you made in Option 1 into the _Sim_ folder. Call that file "simtpt.csv", short for "simulation template".
+4. In your _Workshop.R_ script, save the object you created as a second template file.
+
+- Change the working directory with [setwd](https://rdrr.io/r/base/getwd.html){target="\_blank"}.
+
+* You can first execute line 6 to change the working directory to the _Runs_ folder in your project.
+* Then use this command to switch to the _Sim_ folder: `setwd("../Sim")`
+
+- Use `dat$write("simtpt2.csv")` to save the `PM_data` object you made into the _Sim_ folder of your project.
+
 5. Compare "simtpt.csv" and "simtpt2.csv". Are they the same? How are they different?
 
 ## Build the model
 
 ### Choosing the structural model
 
-We need to decide on the equations for the model that relate input (dose) to output (concentration). That will either be a set of equations with an algebraic solution or a set of ordinary differential equations (ODEs). An algebraic solution means that the computer can calculate the concentration at any given time with simple algebra and not needing to use a differential equation solver. 
+We need to decide on the equations for the model that relate input (dose) to output (concentration). That will either be a set of equations with an algebraic solution or a set of ordinary differential equations (ODEs). An algebraic solution means that the computer can calculate the concentration at any given time with simple algebra and not needing to use a differential equation solver.
 
 ### Quiz
 
@@ -482,10 +487,10 @@ question("Does this model use algebraic equations or ODEs?",
 )
 ```
 
-For this portion of the tutorial, we will use the model builder app in Pmetrics. 
+For this portion of the tutorial, we will use the model builder app in Pmetrics.
 
-1. Ensure that Pmetrics is loaded in R with `library(Pmetrics)`. This is the first line of code in your *Workshop.R* file in your project tree.
-2. Use [build_model](https://lapkb.github.io/Pmetrics/reference/build_model.html){target="_blank"} to launch the app.
+1. Ensure that Pmetrics is loaded in R with `library(Pmetrics)`. This is the first line of code in your _Workshop.R_ file in your project tree.
+2. Use [build_model](https://lapkb.github.io/Pmetrics/reference/build_model.html){target="\_blank"} to launch the app.
 3. Choose the library model with CL and V and one compartment. Hit the "Select" button.
 4. Let's visit each section in turn.
 
@@ -515,16 +520,16 @@ In reality, although we indeed want to simulate **3** primary parameters, in thi
 
 ### Specifying parameter values
 
-The Pmetrics simulator always simulates from normal distributions with a mean and standard deviation. It is possible to log-transform parameter values, and in fact we will do that in this model. 
+The Pmetrics simulator always simulates from normal distributions with a mean and standard deviation. It is possible to log-transform parameter values, and in fact we will do that in this model.
 
 1. On the Primary Parameters tab of the app, name your 3 variables:
 
-* etaCL
-* etaV
-* wt
+- etaCL
+- etaV
+- wt
 
 2. Choose to specify as mean/SD.
-3. Use a mean of 0 for both etaCL and etaV. 
+3. Use a mean of 0 for both etaCL and etaV.
 4. For standard deviation, go back to your second quiz and recall the value you found for $\omega_{CL}$. Multiply that number by 2 to allow for a wider simulation range and enter it for the SD on etaCL.
 5. Do the same calculation for the SD on etaV.
 6. For weight, enter mean 82 kg, SD 25 kg.
@@ -543,10 +548,11 @@ Although the model by Li et al includes weight (WT) and creatinine clearance (CC
 Now, learn how to make the accompanying model, continuing in the model builder app from the previous exercise.
 
 1. Move to the COVariates tab on the left side of the app.
-2. Click the "i" button at the top for information. 
+2. Click the "i" button at the top for information.
+
 - Since you launched the app without passing a model or data object as an argument, there were no pre-loaded covariates.
 - Follow the instructions to add `ccr` as a covariate.
-- Watch how the Model List changes in the bottom window. Make sure you have that tab selected. 
+- Watch how the Model List changes in the bottom window. Make sure you have that tab selected.
 - If you like you can make it piece-wise constant by typing `ccr!` instead, and the Model List will update. Change it back to `ccr`.
 - We don't add WT as a covariate, because we already added it as a primary parameter to be simulated.
 
@@ -555,7 +561,7 @@ Now, learn how to make the accompanying model, continuing in the model builder a
 ```{r echo = F}
 knitr::include_graphics("images/cov.png")
 ```
-</details>  
+</details>
 
 ### Defining secondary equations
 
@@ -589,7 +595,6 @@ CL = (5.05 + 9.60 \* ccr/89) \* exp(etaCL)
 Don't feel bad if you didn't get it. Pharmacometrics is very detail oriented and your skills will improve with practice!
 </details>
 
-
 Add these equations to the definition block and watch the Model List evolve. **Note:** Put the equations for V and CL before the equation for Ke, so that Pmetrics knows what CL and V are by the time it reaches Ke.
 
 <details>
@@ -597,13 +602,13 @@ Add these equations to the definition block and watch the Model List evolve. **N
 ```{r echo = F}
 knitr::include_graphics("images/sec.png")
 ```
-</details> 
+</details>
 
 ### Equations
 
-The good news is that there isn't anything for you to do on the EQuatioN tab! Pmetrics has added a differential equation which you can see in both the Model Equations box and in the `eqn` block of the Model List below. 
+The good news is that there isn't anything for you to do on the EQuatioN tab! Pmetrics has added a differential equation which you can see in both the Model Equations box and in the `eqn` block of the Model List below.
 
-However, you can also see a "token" in the Model List that indicates this model will be solved algebraically. The differential equation is only for the purposes of structural model plotting in the diagram and for transparency, since algebraic solutions for models with more than one compartment are quite difficult to interpret. In contrast, once you are used to looking at pharmacokinetic/pharmacodynamic model differential equations, you can rapidly understand the structure. For more details on the token, you can read our article on [Models](https://lapkb.github.io/Pmetrics/articles/models.html){target="_blank"}.
+However, you can also see a "token" in the Model List that indicates this model will be solved algebraically. The differential equation is only for the purposes of structural model plotting in the diagram and for transparency, since algebraic solutions for models with more than one compartment are quite difficult to interpret. In contrast, once you are used to looking at pharmacokinetic/pharmacodynamic model differential equations, you can rapidly understand the structure. For more details on the token, you can read our article on [Models](https://lapkb.github.io/Pmetrics/articles/models.html){target="\_blank"}.
 
 Note that this model is very simple structurally, being only one compartment with no oral dosing. You can click the "i" button to understand more about how to write differential equations if you build your own model from scratch. All that work with $\theta$s and $\eta$s has paid off and the model equation reduces to a single parameter Ke!
 
@@ -619,7 +624,7 @@ Lastly we come to the outputs, where we define in the model how to calculate our
 
 You can click on the "i" button for more information on how to write these output equations, but Pmetrics has already completed one for you based on the model you chose.
 
-There is also nothing for you to do here because Pmetrics knows how to define the output based on the model you selected from the library. The fields related to assay and model error are more relevant when you are trying to fit models to data, rather than simulating. They describe how observations are weighted in the fitting process (assay noise) as well as additional noise (model error) associated with model misspecification and in the data (e.g. small errors in recorded sample times). Again, for more details refer to  [Models](https://lapkb.github.io/Pmetrics/articles/models.html){target="_blank"}.
+There is also nothing for you to do here because Pmetrics knows how to define the output based on the model you selected from the library. The fields related to assay and model error are more relevant when you are trying to fit models to data, rather than simulating. They describe how observations are weighted in the fitting process (assay noise) as well as additional noise (model error) associated with model misspecification and in the data (e.g. small errors in recorded sample times). Again, for more details refer to [Models](https://lapkb.github.io/Pmetrics/articles/models.html){target="\_blank"}.
 
 These are not used for simulation although as we'll see, there are options to add noise to simulated inputs and outputs.
 
@@ -633,8 +638,7 @@ At last you are ready to use the model! First, click the "Save" button. If your 
 knitr::include_graphics("images/save.png")
 ```
 
-A file named "model.txt" is saved in your current working directory. You can double check this in R with [getwd](https://rdrr.io/r/base/getwd.html){target="_blank"}. 
-
+A file named "model.txt" is saved in your current working directory. You can double check this in R with [getwd](https://rdrr.io/r/base/getwd.html){target="\_blank"}.
 
 In your Mac Finder, Windows Explorer, or Linux File Manager, copy "model.txt" from its folder into the /src folder of your Workshop project.
 
@@ -693,9 +697,9 @@ We have the model; we have the data template. Let's turn our attention to the co
 
 The final mandatory item to run the simulator is a definition of the parameter value distributions from which to draw samples. This is called `poppar`, which is a list of three elements.
 
-* **wt** The weights of distributions in a mixture model. Typically, especially if simulating from the literature, there will only be one value, which will be 1. If there were two distributions, i.e. a bimodal parameter, then this element would have two numbers with the relative weights of each mode, summing to 1, e.g. `c(0.4, 0.6)`.
-* **mean** A vector of mean values for each random parameter in the model. If `length(wt) > 1` then this will be a matrix, with each row containing the mean parameter values for each mode.
-* **cov** The covariance matrix. Diagonal elements are the variances for the parameters, and off-diagonal are the co-variances. If there is more than one mode, then this is just the overall covariance, i.e. there is still only one matrix. If simulating from the literature, the co-variances are usually zero as they are not supplied. In that case, a convenvient way to make a diagonal matrix in R, with off-diagonal values = 0 is as follows.
+- **wt** The weights of distributions in a mixture model. Typically, especially if simulating from the literature, there will only be one value, which will be 1. If there were two distributions, i.e. a bimodal parameter, then this element would have two numbers with the relative weights of each mode, summing to 1, e.g. `c(0.4, 0.6)`.
+- **mean** A vector of mean values for each random parameter in the model. If `length(wt) > 1` then this will be a matrix, with each row containing the mean parameter values for each mode.
+- **cov** The covariance matrix. Diagonal elements are the variances for the parameters, and off-diagonal are the co-variances. If there is more than one mode, then this is just the overall covariance, i.e. there is still only one matrix. If simulating from the literature, the co-variances are usually zero as they are not supplied. In that case, a convenvient way to make a diagonal matrix in R, with off-diagonal values = 0 is as follows.
 
 ```{r echo = T, eval = TRUE}
 diag(c(0.25, 625))
@@ -755,17 +759,19 @@ poppar <- list(wt = 1, mean = c(0, 0, 82), cov = diag(c((2*0.277)^2, (2*0.252)^2
 
 **Copy the code into your Rscript.**
 
-
 ## Simulator command
 
-At last we are ready to simulate. As described in [Simulation](https://lapkb.github.io/Pmetrics/articles/simulation.html){target="_blank"} vignette, there are two ways to run the simulator. 
+At last we are ready to simulate. As described in [Simulation](https://lapkb.github.io/Pmetrics/articles/simulation.html){target="\_blank"} vignette, there are two ways to run the simulator.
 
-* If starting from the results of a population analysis, e.g. with NPAG or IT2B
+- If starting from the results of a population analysis, e.g. with NPAG or IT2B
+
 ```{r echo = TRUE, eval = FALSE}
 run1 <- PM_load(1)
 sim1 <- run1$sim(...)
 ```
-* Otherwise, use this construct.
+
+- Otherwise, use this construct.
+
 ```{r echo = TRUE, eval = FALSE}
 sim1 <- PM_sim$new(poppar, model, data,...)
 ```
@@ -774,10 +780,10 @@ The advantage of the first approach is that `poppar` can be obtained from the `P
 
 However, if you don't have a prior run, such as the case in this workshop where we are simulating from the literature, you need to go with approach two. That's why we've been learning to make the data, model and `poppar`.
 
-The [Simulation](https://lapkb.github.io/Pmetrics/articles/simulation.html){target="_blank"} vignette and the help for the underlying simulator function [SIMrun](https://lapkb.github.io/Pmetrics/reference/SIMrun.html){target="_blank"} detail all the arguments you can use to change the behavior of the simulator. Here, we'll focus on two:
+The [Simulation](https://lapkb.github.io/Pmetrics/articles/simulation.html){target="\_blank"} vignette and the help for the underlying simulator function [SIMrun](https://lapkb.github.io/Pmetrics/reference/SIMrun.html){target="\_blank"} detail all the arguments you can use to change the behavior of the simulator. Here, we'll focus on two:
 
-* limits
-* predInt
+- limits
+- predInt
 
 Limits allows you to truncate the simulation to keep it within the boundaries established. Using a value of `NA` will apply the limits in the model. You can remind yourself of those limits by looking at min and max for each of the primary parameters with this code.
 
@@ -789,11 +795,11 @@ Using `predInt` is a powerful shorthand for adding simulations/predicitons at de
 
 You now have all the arguments for your call to `PM_sim$run()`.
 
-* mod1
-* dat
-* poppar
-* limits
-* predInt
+- mod1
+- dat
+- poppar
+- limits
+- predInt
 
 Try your best to write the code in your Rscript, Workshop.R. Assign the results to `sim1`.
 
@@ -802,8 +808,8 @@ Try your best to write the code in your Rscript, Workshop.R. Assign the results 
 `sim1 <- PM_sim$new(model = mod1, data = dat, poppar = poppar, limits = NA, predInt = 1)`
 
 This assumes you already defined mod1, dat, and poppar using the code that we devloped earlier and copied into Workshop.R.
-</details>
 
+</details>
 
 **Execute the code in your R script to run the simulation.**
 
@@ -811,9 +817,9 @@ This assumes you already defined mod1, dat, and poppar using the code that we de
 
 Let's look at the results of the simulation. They should be stored in an object called `sim1`. To understand the struture of `sim1`, simply print it to the console by typing its name and pressing <Return>.
 
-You'll see that it is a [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="_blank"}, which contains a `data` field and several methods. The `data` field contains a list of all the [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="_blank"} objects, one for each of the three template dosing regimens in your data template file.
+You'll see that it is a [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="\_blank"}, which contains a `data` field and several methods. The `data` field contains a list of all the [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="\_blank"} objects, one for each of the three template dosing regimens in your data template file.
 
-To plot from a [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="_blank"} object, call the method and use the `at` argument to choose which of the list of `PM_sim` objects you want to plot.
+To plot from a [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="\_blank"} object, call the method and use the `at` argument to choose which of the list of `PM_sim` objects you want to plot.
 
 Copy this code into your R script.
 
@@ -829,11 +835,11 @@ knitr::include_graphics("images/sim1plot.png")
 
 **Try plotting the other two simulated regimens on your own.**
 
-The help for [plot.PM_sim](https://lapkb.github.io/Pmetrics/reference/plot.PM_sim.html){target="_blank"} documents all the options for plotting. Pmetrics uses the `plotly` package for default plotting. Plotly is a package originally developed in Python but ported to R.  Help is generally available by searching the internet for "R plotly ..." as well as help files for any plotly function. Try `?plot_ly` and then click `Index` at the bottom of the page. You can also use the [schema](https://rdrr.io/cran/plotly/man/schema.html){target="_blank"} command to invoke an expandable list of all plotly plots and arguments. Lastly, view the Pmetrics article on [plotly](https://lapkb.github.io/Pmetrics/articles/data.html){target="_blank"}
+The help for [plot.PM_sim](https://lapkb.github.io/Pmetrics/reference/plot.PM_sim.html){target="\_blank"} documents all the options for plotting. Pmetrics uses the `plotly` package for default plotting. Plotly is a package originally developed in Python but ported to R. Help is generally available by searching the internet for "R plotly ..." as well as help files for any plotly function. Try `?plot_ly` and then click `Index` at the bottom of the page. You can also use the [schema](https://rdrr.io/cran/plotly/man/schema.html){target="\_blank"} command to invoke an expandable list of all plotly plots and arguments. Lastly, view the Pmetrics article on [plotly](https://lapkb.github.io/Pmetrics/articles/data.html){target="\_blank"}
 
 ## A little more advanced plotting
 
-There is no pre-defined Pmetrics plot function to examine the simulated parameter values, but of course in R you can do this. Remember that sim1 is a list of [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="_blank"} objects, so you need to access the individual elements.
+There is no pre-defined Pmetrics plot function to examine the simulated parameter values, but of course in R you can do this. Remember that sim1 is a list of [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="\_blank"} objects, so you need to access the individual elements.
 
 First, look at the first row of simulated parameter values for each regimen. Copy and execute the following code in your R script.
 
@@ -841,17 +847,17 @@ First, look at the first row of simulated parameter values for each regimen. Cop
 purrr::map_df(sim1$data, \(x) x$parValues[1,])
 ```
 
-What does this code do? It uses the [map_df](https://rdrr.io/cran/purrr/man/map_dfr.html){target="_blank"} function in the *purrr* package from tidyverse to cycle through each of the list elements in our `sim1` object. The *purrr* package is all about working with lists in R. The `\(x)` is *purrr*'s shorthand way of defining a function of `x`, where `x` is the current member of the first argument to `map_df`, in this case, `sim1$data`, i.e., the output from our first simulated regimen. So we are looking at the first row of each `parValues` data field for each simulated output. 
+What does this code do? It uses the [map_df](https://rdrr.io/cran/purrr/man/map_dfr.html){target="\_blank"} function in the _purrr_ package from tidyverse to cycle through each of the list elements in our `sim1` object. The _purrr_ package is all about working with lists in R. The `\(x)` is _purrr_'s shorthand way of defining a function of `x`, where `x` is the current member of the first argument to `map_df`, in this case, `sim1$data`, i.e., the output from our first simulated regimen. So we are looking at the first row of each `parValues` data field for each simulated output.
 
 What do you notice? They are all the same! That's the expected behavior. We reuse the same seed to start the random parameter selection for each regimen. That ensures we are comparing the same "subjects" across regimens and that differnces are entirely due to the regimen, and not due to differing parameter values. To override this behavior, you can use the `seed` argument with as many seeds as you have subjects in your template.
 
 Now that we know the parameter values are the same for each regimen, let's plot them, using the first set. We'll compare 3 methods to plot them:
 
-* Base R
-* ggplot2
-* plotly
+- Base R
+- ggplot2
+- plotly
 
-**Copy and execute this code in your R script.***
+**Copy and execute this code in your R script.\***
 
 ```{r echo = TRUE, eval = FALSE}
 
@@ -870,13 +876,13 @@ parValues |> plotly::plot_ly(x = ~etaCL, type = "histogram", nbinsx = 50)
 
 ```
 
-Notice the use of the pipe `%>%` or `|>` for plotly. This is an amazing innovation in Tidyverse (the magrittr package), which developed the `%>%` operator as a method of chaining the output of one function to the input of the next. [Tidyverse](https://www.tidyverse.org){target="_blank"} is a powerful set of libraries for R that permit methodical, advanced data manipulation. You can load it with `library(tidyverse)`. Base R has now adopted the pipe, with one fewer characters to type. Any function in R which takes the data as the first argument, usually named `x`, will work with a pipe. See `?"%>%"` and `?"|>"` for more details on these useful operators.
+Notice the use of the pipe `%>%` or `|>` for plotly. This is an amazing innovation in Tidyverse (the magrittr package), which developed the `%>%` operator as a method of chaining the output of one function to the input of the next. [Tidyverse](https://www.tidyverse.org){target="\_blank"} is a powerful set of libraries for R that permit methodical, advanced data manipulation. You can load it with `library(tidyverse)`. Base R has now adopted the pipe, with one fewer characters to type. Any function in R which takes the data as the first argument, usually named `x`, will work with a pipe. See `?"%>%"` and `?"|>"` for more details on these useful operators.
 
 **Plot the other simulated parameters on your own.**
 
 ## Summaries of simulations
 
-[PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="_blank"} objects contain a method to summarize the results, and there is a corresponding method for [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="_blank"} objects using the `at = ` argument that you have already seen with the `PM_sim$plot()` method.
+[PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="\_blank"} objects contain a method to summarize the results, and there is a corresponding method for [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="\_blank"} objects using the `at = ` argument that you have already seen with the `PM_sim$plot()` method.
 
 Copy the following code into your R script.
 
@@ -900,7 +906,7 @@ Now we group the simulation by "id", then summarize to obtain the mean, sd, medi
 sim1$summary(at = 1, field = "obs", by = "id", individual = TRUE)
 ```
 
-To obtain the areas under the curve (AUC), you can use the `$auc` method attached to [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="_blank"} objects.
+To obtain the areas under the curve (AUC), you can use the `$auc` method attached to [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="\_blank"} objects.
 
 ```{r echo = TRUE, eval = FALSE}
 sim1$auc(at = 1) #auc for all times 0 to 72
@@ -908,21 +914,20 @@ sim1$auc(at = 1, start = 48, end = 72) #auc just for the last 24 hours
 sim1$auc(at = 1) %>% summary() #pipe to summary()
 ```
 
-
 ## Using the simulations for PTA
 
-Probability of target attainment (PTA) is a powerful application of simulated results. The idea is to calculate the proportion of simulated profiles corresponding to a particular dosage regimen which meet given criteria for "success". 
+Probability of target attainment (PTA) is a powerful application of simulated results. The idea is to calculate the proportion of simulated profiles corresponding to a particular dosage regimen which meet given criteria for "success".
 
 For example, it could be a certain AUC or time above a threshold.
 
 Pmetrics allows you to create a PTA in two ways.
 
-* Use the `$pta()` method attached to [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="_blank"} and [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="_blank"} objects.
-* Use `PM_pta$new()`.
+- Use the `$pta()` method attached to [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="\_blank"} and [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="\_blank"} objects.
+- Use `PM_pta$new()`.
 
-The only difference between these two is that with the first, you do not have to supply the name of your simulation object because you are operating upon it already. 
+The only difference between these two is that with the first, you do not have to supply the name of your simulation object because you are operating upon it already.
 
-**Copy the code below into your R script** to create a PTA. Refer to [makePTA](https://lapkb.github.io/Pmetrics/reference/makePTA.html){target="_blank"} for details on the arguments to the method.
+**Copy the code below into your R script** to create a PTA. Refer to [makePTA](https://lapkb.github.io/Pmetrics/reference/makePTA.html){target="\_blank"} for details on the arguments to the method.
 
 ```{r echo = TRUE, eval = FALSE}
 #first define labels for simulated regimens
@@ -952,46 +957,49 @@ pta2 <- sim1$pta(simlabels = simlabels,
 
 **Some things to point out...**
 
-We'll say again that you must supply simulation data, which has been previously generated. By using the `PM_sim$pta()` method on `sim1`, the simulation data are embedded in the object. If you use `PM_pta$new()`, you have to supply the name of a [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="_blank"} object yourself.
+We'll say again that you must supply simulation data, which has been previously generated. By using the `PM_sim$pta()` method on `sim1`, the simulation data are embedded in the object. If you use `PM_pta$new()`, you have to supply the name of a [PM_simlist](https://lapkb.github.io/Pmetrics/reference/PM_simlist.html){target="\_blank"} object yourself.
 
 Details of key arguments follow.
 
-* **simlabels** Optional character vector of labels for each simulation (i.e. subject in the data template). Default is `c("Regimen 1", "Regimen 2",...)`.
-* **targets** A vector of pharmacodynamic targets, such as Minimum Inhibitory Concentrations (MICs), e.g. 'c(0.25, 0.5,1,2,4,8,16,32)'. In the second PTA, instead of a uniform distribution for MIC, we used a sampled distribution using [makePTAtarget](https://lapkb.github.io/Pmetrics/reference/makePTAtarget.html){target="_blank"} from real data (EUCAST).
-* **target.type** Here we chose "time" to indicate that our PDI is proportion of the intervalspecified by `start` and `end` that concentrations exceed the target. This argument can also be a numeric or character vector, length 1. If numeric, must correspond to an observation time common to all the [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="_blank"} objects in the simulation data, rounded to the nearest hour. In this case, the target statistic will be the ratio of observation at time `target.type` to `target`. This enables testing of a specific timed concentration (e.g. one hour after a dose or C1) which may be called a peak, but is not actually the maximum drug concentration. Be sure that the time in the simulated data is used, e.g. `target = 121` after a dose given at time 120. In addition to "time", character values may be one of "auc", "peak", or "min", for, respectively, ratio of area under the curve within the `start:end` time range to target, ratio of peak concentration within the time range to target, or ratio of minimum concentration within the time range to target.
-* **success** A single value specifying the success statistic, e.g. 0.4 for proportion time (end-start) above target. If we were using `target.type = "peak"`, perhaps we could have chosen `success = 100` to indicate a goal peak:target of 100.
+- **simlabels** Optional character vector of labels for each simulation (i.e. subject in the data template). Default is `c("Regimen 1", "Regimen 2",...)`.
+- **targets** A vector of pharmacodynamic targets, such as Minimum Inhibitory Concentrations (MICs), e.g. 'c(0.25, 0.5,1,2,4,8,16,32)'. In the second PTA, instead of a uniform distribution for MIC, we used a sampled distribution using [makePTAtarget](https://lapkb.github.io/Pmetrics/reference/makePTAtarget.html){target="\_blank"} from real data (EUCAST).
+- **target.type** Here we chose "time" to indicate that our PDI is proportion of the intervalspecified by `start` and `end` that concentrations exceed the target. This argument can also be a numeric or character vector, length 1. If numeric, must correspond to an observation time common to all the [PM_sim](https://lapkb.github.io/Pmetrics/reference/PM_sim.html){target="\_blank"} objects in the simulation data, rounded to the nearest hour. In this case, the target statistic will be the ratio of observation at time `target.type` to `target`. This enables testing of a specific timed concentration (e.g. one hour after a dose or C1) which may be called a peak, but is not actually the maximum drug concentration. Be sure that the time in the simulated data is used, e.g. `target = 121` after a dose given at time 120. In addition to "time", character values may be one of "auc", "peak", or "min", for, respectively, ratio of area under the curve within the `start:end` time range to target, ratio of peak concentration within the time range to target, or ratio of minimum concentration within the time range to target.
+- **success** A single value specifying the success statistic, e.g. 0.4 for proportion time (end-start) above target. If we were using `target.type = "peak"`, perhaps we could have chosen `success = 100` to indicate a goal peak:target of 100.
 
-The created objects `pta1` and `pta2` are [PM_pta](https://lapkb.github.io/Pmetrics/reference/PM_pta.html){target="_blank"} objects, which you can look at by typing `pta1` or `pta2` into the R console. `PM_pta()` objects have two data fields:
+The created objects `pta1` and `pta2` are [PM_pta](https://lapkb.github.io/Pmetrics/reference/PM_pta.html){target="\_blank"} objects, which you can look at by typing `pta1` or `pta2` into the R console. `PM_pta()` objects have two data fields:
 
-* **results** A data frame with the following columns: *simnum*, *id*, *target*, *pdi.* 
-- *simnum* is the number of the simulation
-- *id* is the simulated profile number within each simulation
-- *target* is the specified target
-- *pdi* is the target pharmacodynamic index, e.g. time > target, auc:target, etc.
-* **outcome** A data frame summarizing the results with the following columns: *simnum*, *target*, *prop.success*, *pdi.mean*, and *pdi.sd.* If 'targets' was specified via `makePTAtarget()` to be a sampled distribution, then the target column will be missing from the outcome table. 
-- *simnum* and *target* are as for 'results'. 
-- The *prop.success* column has the proportion with a pdi > 'success', as specified in the function call. 
-- The *pdi.mean* and *pdi.sd* columns have the mean and standard deviation of the target pharmacodynamic index (e.g. proportion end-start above target, ratio of Cmax to target) for each simulation and target.
+- **results** A data frame with the following columns: _simnum_, _id_, _target_, _pdi._
+
+* _simnum_ is the number of the simulation
+* _id_ is the simulated profile number within each simulation
+* _target_ is the specified target
+* _pdi_ is the target pharmacodynamic index, e.g. time > target, auc:target, etc.
+
+- **outcome** A data frame summarizing the results with the following columns: _simnum_, _target_, _prop.success_, _pdi.mean_, and _pdi.sd._ If 'targets' was specified via `makePTAtarget()` to be a sampled distribution, then the target column will be missing from the outcome table.
+
+* _simnum_ and _target_ are as for 'results'.
+* The _prop.success_ column has the proportion with a pdi > 'success', as specified in the function call.
+* The _pdi.mean_ and _pdi.sd_ columns have the mean and standard deviation of the target pharmacodynamic index (e.g. proportion end-start above target, ratio of Cmax to target) for each simulation and target.
 
 They also have several methods:
 
-* **clone()** to make a copy.
-* **save()** and **load()** to save/load as an .rds file.
-* **plot()** to call [plot.PM_pta](https://lapkb.github.io/Pmetrics/reference/plot.PM_pta.html){target="_blank"}.
-* **summary()** to call [summary.PMpta](https://lapkb.github.io/Pmetrics/reference/summary.PMpta.html){target="_blank"}
+- **clone()** to make a copy.
+- **save()** and **load()** to save/load as an .rds file.
+- **plot()** to call [plot.PM_pta](https://lapkb.github.io/Pmetrics/reference/plot.PM_pta.html){target="\_blank"}.
+- **summary()** to call [summary.PMpta](https://lapkb.github.io/Pmetrics/reference/summary.PMpta.html){target="\_blank"}
 
 ## Plotting PTA
 
 The most basic plot is achieved with a simple call to the method. Copy the below code to your R script.
 
 ```{r echo = TRUE, eval = FALSE}
-pta1$plot() 
+pta1$plot()
 pta2$plot()
 ```
 
 Notice the difference between the plots, according to whether `target` was discrete or from a distribution. The latter plot is also known as a "Cumulative Fractional Response" or CFR, which is the proportion of a population achieving a response for a give dosage with a distribution of target values in that population.
 
-There are many ways to modify the plot, consistent with other Pmetrics plots which use the *plotly* package and all detailed in the help for `plot.PM_data()`. For example, 
+There are many ways to modify the plot, consistent with other Pmetrics plots which use the _plotly_ package and all detailed in the help for `plot.PM_data()`. For example,
 
 ```{r echo = TRUE, eval = FALSE}
 p <- pta1$plot(line = list(width = 3),
@@ -1006,8 +1014,8 @@ p <- pta1$plot(line = list(width = 3),
 Here's more advanced plotly. Here we take the previous plot `p` and add bars to it to represent the frequency distribution of piperacillin MICs for E. Coli from EUCAST. We use our `pip_pseudo` data frame, the MICs for the x-axis, and the normalized counts for frequencies. We re-define the y-axis labels using some CSS/HTML to color individual portions. This is quite advanced plotly!
 
 ```{r echo = TRUE, eval = FALSE}
-p %>% plotly::add_bars(x = ~mic, 
-                       y = ~round(n/sum(n),2), 
+p %>% plotly::add_bars(x = ~mic,
+                       y = ~round(n/sum(n),2),
                        marker = list(opacity = 0.6, color = "Dodgerblue"),
                        name = "MIC",
                        data = pip_pseudo,
@@ -1016,7 +1024,7 @@ p %>% plotly::add_bars(x = ~mic,
                        inherit = FALSE
 ) %>%
   plotly::layout(
-    yaxis = list(title = 
+    yaxis = list(title =
                    list(text = "<b>Proportion with %T>MIC ≥ 60%<br><span style='color:Dodgerblue; opacity:0.6'>MIC Frequency</span></b>")),
     font = list(size = 10))
 
@@ -1030,27 +1038,28 @@ pta1$plot(type = "pdi", ci = 0,
           xlab = "MIC (mg/L)")
 ```
 
-
 ## Summarizing PTA
 
-Like most created Pmetrics objects, `PM_pta()` objects can be summarized. 
+Like most created Pmetrics objects, `PM_pta()` objects can be summarized.
 
 ```{r echo = TRUE, eval = FALSE}
 pta1$summary()
 pta2$summary()
 ```
 
-The output is a list with two named objects: 
+The output is a list with two named objects:
 
-* **pta** A data frame with the following columns: *simnum*, *target*, *prop.success*, *pdi.mean*, and *pdi.sd* 
-- simnum is the number of the simulation
-- target is the specified target
-- success has the proportion with a ratio > prop.success
-- pdi.mean and pdi.sd are the mean and standard deviation of the pharmacodyamic index (e.g. AUC/MIC) for each simulation and target.
+- **pta** A data frame with the following columns: _simnum_, _target_, _prop.success_, _pdi.mean_, and _pdi.sd_
 
-* **pdi**	A data frame with the following columns: *target*, *simnum*, *lowerCI*, *median*, *upperCI.* 
-- target and simnum are as above. 
-- lowerCI, median, and upperCI are the lower limit, median, and upper limit of the confidence interval for the pdi whose width is specified by an argument `ci` to the summary method. The default for `ci` is 0.95, but this can be changed.
+* simnum is the number of the simulation
+* target is the specified target
+* success has the proportion with a ratio > prop.success
+* pdi.mean and pdi.sd are the mean and standard deviation of the pharmacodyamic index (e.g. AUC/MIC) for each simulation and target.
+
+- **pdi** A data frame with the following columns: _target_, _simnum_, _lowerCI_, _median_, _upperCI._
+
+* target and simnum are as above.
+* lowerCI, median, and upperCI are the lower limit, median, and upper limit of the confidence interval for the pdi whose width is specified by an argument `ci` to the summary method. The default for `ci` is 0.95, but this can be changed.
 
 ```{r echo = TRUE, eval = FALSE}
 pta1$summary(ci = 0.9)
@@ -1068,8 +1077,7 @@ question("Which regimen had the best PTA?",
 
 Interestingly, the regimen with infusions over 4 hours given every 8 hours had a slightly higher PTA than the continuous infusion, likely because the success definition was only %T > MIC of 40%. With a continous infusion, you are all above or all below the MIC, while an intermittent can allow for success if the required %T > MIC is not large and a significant portion of the time the concentrations are below the target.
 
-
-Go back and create another simulation called `sim2` and make $\omega$ for each of the random parameters three times what Li et al found, instead of twice as we did previously. 
+Go back and create another simulation called `sim2` and make $\omega$ for each of the random parameters three times what Li et al found, instead of twice as we did previously.
 
 ```{r pta-change1}
 question("What will you have to change to accomplish this?",
@@ -1082,8 +1090,7 @@ question("What will you have to change to accomplish this?",
          allow_retry = TRUE)
 ```
 
-
-For the model try using the `$clone()` and `$update` methods as below. 
+For the model try using the `$clone()` and `$update` methods as below.
 
 ```{r echo = TRUE, eval = FALSE}
 mod2 <- mod1$clone() #this makes a copy of mod1
@@ -1097,22 +1104,21 @@ mod2$update(list(
 ))
 ```
 
-Write the R code to make your new `poppar2` and  `sim2`, copy it into your R script and run it. You can check your work with the *Solution* button, but there are several ways to write this R code, so if yours doesn't match the solution we provided exactly, your code might still work!
+Write the R code to make your new `poppar2` and `sim2`, copy it into your R script and run it. You can check your work with the _Solution_ button, but there are several ways to write this R code, so if yours doesn't match the solution we provided exactly, your code might still work!
 
 ```{r sim2, exercise = TRUE}
 
 ```
 
 ```{r sim2-solution}
-poppar2 <- list(wt = 1, 
-                mean = c(0, 0, 82), 
+poppar2 <- list(wt = 1,
+                mean = c(0, 0, 82),
                 cov = diag(c((3*0.277)^2, (3*0.252)^2, (3*25)^2)))
 
-sim2 <- PM_sim$run(model = mod2, data = dat, 
-                   poppar = poppar2, 
+sim2 <- PM_sim$run(model = mod2, data = dat,
+                   poppar = poppar2,
                    limits = NA, predInt = 1)
 ```
-
 
 Now, redo the PTA with your new `sim2` object. Call the new PTA `pta3`.
 
@@ -1165,22 +1171,22 @@ You can see that the effect of increasing $\omega$ resulted in slightly lower PT
 
 **Now, let's explore the influence of CCR.**
 
-* Try rebuilding your data to make CCR fixed at a low value of 40.
-* Copy and paste the code for `dat` in your R script.
-* Name the new object `dat40`.
-* Edit all the values of 90 to make them 40.
-* Do the same again and make `dat130` for a CCR of 130.
-* Rebuild the simulations with $2*\omega$ (`poppar`, not `poppar2`) and each of `dat40` and `dat130`. Call them `sim40` and `sim130`.
-* Redo the PTA and call them `pta40` and `pta130`.
-* Plot them.
+- Try rebuilding your data to make CCR fixed at a low value of 40.
+- Copy and paste the code for `dat` in your R script.
+- Name the new object `dat40`.
+- Edit all the values of 90 to make them 40.
+- Do the same again and make `dat130` for a CCR of 130.
+- Rebuild the simulations with $2*\omega$ (`poppar`, not `poppar2`) and each of `dat40` and `dat130`. Call them `sim40` and `sim130`.
+- Redo the PTA and call them `pta40` and `pta130`.
+- Plot them.
 
 **Note to yourself how renal insufficiency (CCR 40) and augmented renal clearance (CCR 130) affected PTA.**
 
 Try to now simulate CCR as a random variable with a range between 30 and 130.
 
-You will need to remake your data, model, and poppar objects. For the data, copy the code for `dat` and make a new object called `dat2`. Remove the CCR entries. 
+You will need to remake your data, model, and poppar objects. For the data, copy the code for `dat` and make a new object called `dat2`. Remove the CCR entries.
 
-For the model again use the `$clone()` and `$update` methods as below. 
+For the model again use the `$clone()` and `$update` methods as below.
 
 ```{r echo = TRUE, eval = FALSE}
 mod3 <- mod1$clone() #this makes a copy of mod1
@@ -1193,31 +1199,33 @@ mod3$update(list(
 ))
 ```
 
-You should now have `dat2` and `mod3` which have both WT and CCR as random variables. 
+You should now have `dat2` and `mod3` which have both WT and CCR as random variables.
 
-What needs to be done to `poppar`? Think about that for a minute, maybe try writing some code  then check your answer. **Hint**, you can look at `mod3` and get the SD for CCR based on the range you created above, and of course $variance = SD^2$. Don't forget to inflate that SD by 2 before squaring it.
+What needs to be done to `poppar`? Think about that for a minute, maybe try writing some code then check your answer. **Hint**, you can look at `mod3` and get the SD for CCR based on the range you created above, and of course $variance = SD^2$. Don't forget to inflate that SD by 2 before squaring it.
 
 <details>
 <summary>Click here for answer.</summary>
 We need to expand the `mean` and `cov` to include CCR, so `mean` should be a vector with 4 values and `cov` should be a 4x4 matrix.
 
 ```{r echo = TRUE, eval = FALSE}
-poppar3 <- list(wt = 1, 
-                mean = c(0, 0, 82, 90), 
-                cov = diag(c((2*0.277)^2, 
-                             (2*0.252)^2, 
-                             (2*25)^2, 
+poppar3 <- list(wt = 1,
+                mean = c(0, 0, 82, 90),
+                cov = diag(c((2*0.277)^2,
+                             (2*0.252)^2,
+                             (2*25)^2,
                              (2*16.7)^2))
 )
 ```
+
 </details>
 
 Now we have the three mandatory elements to conduct a simulation
-* **data template** dat2
-* **model** mod3
-* **poppar** poppar3
 
-Try creating the simulation using these elements. Call it `sim3`. Then repeat the PTA (calling it `pta4`) as you did for `pta1` but using `sim3`. 
+- **data template** dat2
+- **model** mod3
+- **poppar** poppar3
+
+Try creating the simulation using these elements. Call it `sim3`. Then repeat the PTA (calling it `pta4`) as you did for `pta1` but using `sim3`.
 
 Check the simulated CCR by summarizing the simulation "parValues" field, and then plot `pta4`.
 
@@ -1225,8 +1233,8 @@ Check the simulated CCR by summarizing the simulation "parValues" field, and the
 <summary>Click here for answer.</summary>
 
 ```{r echo = TRUE, eval = FALSE}
-sim3 <- PM_sim$run(model = mod3, data = dat2, 
-                   poppar = poppar3, 
+sim3 <- PM_sim$run(model = mod3, data = dat2,
+                   poppar = poppar3,
                    limits = NA, predInt = 1)
 
 pta4 <- sim3$pta(simlabels = simlabels,
@@ -1238,15 +1246,16 @@ pta4 <- sim3$pta(simlabels = simlabels,
 sim3$summary(at = 1, field = "parValues")
 pta4$plot()
 ```
+
 </details>
 
 **Lastly, look at the influence of the success metric.**
 
 What happens if you change `success` to 1, i.e. concentrations above MIC for 100% of the interval?
 
-* Copy your code for making `pta1` and call it `pta100`.
-* Edit it to change `success` to 1.
-* Remake the PTA, plot and summarize it in your R script.
+- Copy your code for making `pta1` and call it `pta100`.
+- Edit it to change `success` to 1.
+- Remake the PTA, plot and summarize it in your R script.
 
 <details>
 <summary>Click here for answer.</summary>
@@ -1262,6 +1271,7 @@ pta100$plot()
 pta100$summary()
 
 ```
+
 </details>
 
 ```{r pta100}
@@ -1277,27 +1287,25 @@ By now you are an expert!
 
 On your own, explore differing dosage regimens for piperacillin. Dosages as high as 36 gm in a day for obese adults have been reported.
 
-
-``` {r open-pdf2, exercise = TRUE}
+```{r open-pdf2, exercise = TRUE}
 pkgPDF("Veillette_2021.pdf")
 ```
 
 You can add higher doses to your `dat` template as additional subjects in the template and/or experiment with differing infusion durations.
 
-Of course, the higher the dose, the higher a breakpoint, but toxicity becomes an issue. There isn't much on piperacillin toxicity, but one article proposed a threshold of 157.2 mg/L for continuous infusion. 
+Of course, the higher the dose, the higher a breakpoint, but toxicity becomes an issue. There isn't much on piperacillin toxicity, but one article proposed a threshold of 157.2 mg/L for continuous infusion.
 
-``` {r open-pdf3, exercise = TRUE}
+```{r open-pdf3, exercise = TRUE}
 pkgPDF("Quinton_2016.pdf")
 ```
 
 You can contruct a toxicity PTA as well.
 
-* Use `target.type = 72` to focus on the simulated concentration at the end of the last dosing interval at time 72 hours.
-* Keep `success = 1`
-* Use `targets = c(100, 120, 160)` to try differing toxcity thresholds
+- Use `target.type = 72` to focus on the simulated concentration at the end of the last dosing interval at time 72 hours.
+- Keep `success = 1`
+- Use `targets = c(100, 120, 160)` to try differing toxcity thresholds
 
-Now "success" will be the proportion of subjects who exceed the target at time 72, i.e. are at risk of toxicity. 
-
+Now "success" will be the proportion of subjects who exceed the target at time 72, i.e. are at risk of toxicity.
 
 <details>
 <summary>Click here for sample code</summary>
@@ -1313,10 +1321,7 @@ ptaTox$plot()
 ptaTox$summary()
 
 ```
+
 </details>
 
 **Compare the toxicity of 12 gm/day continous to one of your alternative high-dose regimens.**
-
-
-
-
