@@ -66,6 +66,7 @@ dat <- PM_data$new()$
 ```
 ## About this tutorial
 
+<<<<<<< HEAD
 Welcome to the Pmetrics simulation tutorial. This tutorial will briefly introduce you to the R programming language and the Pmetrics simulation framework.
 The main topics of this tutorial are:
 
@@ -87,10 +88,14 @@ This tutorial was designed to accompany a workshop, but may be completed indepen
 
 1. Installed R, Rstudio, and Pmetrics.
 - If you have not done so already, you can obtain everything you need by following these [instructions](http://www.lapk.org/Pmetrics_install.php){target="_blank"}. **Important**: For this workshop we are using a beta version of Pmetrics, v. 2.1.0. Prior versions will not work. Replace the command in step 4 with `remotes::install_github("LAPKB/Pmetrics@dev")`. 
+=======
+**NOTE: This is best viewed in a browser. Click the "Open in Browser" button at the top left corner.**
 
-2. You have also run [PMbuild](https://lapkb.github.io/Pmetrics/reference/PMbuild.html){target="_blank"} to compile the Pmetrics package.
+>>>>>>> julian
 
-3. Completed the [pre-workshop exercises](http://www.lapk.org/workshop/Mar2024/Pre-Workshop.html){target="_blank"}. 
+## Foundations
+
+This tutorial was designed to accompany a workshop, but may be completed independently. We assume that you have completed the [pre-workshop exercises](http://www.lapk.org/workshop/Mar2024/Pre-Workshop.html){target="_blank"}. 
 - You should have created a folder in your hard drive to store your Pmetrics projects. The suggested locations are "C:\\Pmetrics" for Windows users or "~/Pmetrics" for Mac/Linux users.
 - You should have loaded the Pmetrics library in R with `library(Pmetrics)` and created a *Workshop* folder within your *Pmetrics* folder using `PMtree("Workshop")`.
 - Your *Workshop* folder will contain subfolders as described in the help for [PMtree](https://lapkb.github.io/Pmetrics/reference/PMtree.html){target="_blank"}.

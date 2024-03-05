@@ -82,7 +82,7 @@ exRes$data$plot(xlim = c(119, 145))
 
 
 
-A very useful diagnostic plot is to compare the individual observations of each subject with their correspondent posterior profiles. Look at the [documentation](https://lapkb.github.io/Pmetrics/reference/plot.PM_data.html).
+A very useful diagnostic plot is to compare the observations of each subject with their correspondent posterior population profiles. Look at the [documentation](https://lapkb.github.io/Pmetrics/reference/plot.PM_data.html).
 
 ```{r plot_PM_data_question, echo = FALSE}
 question("Which specific arguments do you think might be useful to generate the plot described above?",
@@ -91,26 +91,10 @@ question("Which specific arguments do you think might be useful to generate the 
           answer("marker"),
           answer("names"),
           answer("log"),
-          answer("overlay", correct = TRUE),
+          answer("overlay"),
           allow_retry = TRUE
 )
 ```
-
-How would you generate that plot?
-
-```{r data_pred_plot, exercise = TRUE}
-
-```
-
-```{r data_pred_plot-solution}
-exRes$data$plot(overlay=F,line=list(pred=exRes$post))
-```
-
-
-
-In this case, as we want individual plots for each subject `overlay` must be set to False and because we want to plot the posterior predictions we pass the `exRes$post` object to the `Line` argument.
-
-Now, how would you plot all observations in a single plot with the population predictions?
 
 How would you generate that plot?
 
@@ -121,6 +105,22 @@ How would you generate that plot?
 ```{r data_pred_pop_plot-solution}
 exRes$data$plot(line=list(pred=exRes$pop))
 ```
+
+
+Now, how would you plot each individual observations  with the individual posterior prediction, one plot per subject?
+
+`r colorize("NOTE: ", "red")` Due to technical limitations of this tutorial, this plot might not work here, give it a try on Rstudio!
+
+
+```{r data_pred_plot, exercise = TRUE}
+
+```
+
+```{r data_pred_plot-solution}
+exRes$data$plot(overlay=F,line=list(pred=exRes$post))
+```
+
+In this case, as we want individual plots for each subject `overlay` must be set to False and because we want to plot the posterior predictions we pass the `exRes$post` object to the `Line` argument.
 
 <!-- exRes$data$plot(line = list(join = F, pred = exRes$post),marker = list(color = "blue", symbol = 2)) -->
 
